@@ -1,67 +1,73 @@
-import {Schema} from 'mongoose'
-import {CommentSchema} from './CommentSchema'
-import {SubscriberSchema} from './SubscriberSchema'
+import { Schema } from 'mongoose'
+import { CommentSchema } from './CommentSchema'
+import { SubscriberSchema } from './SubscriberSchema'
 
 export const Region = {
-    country: String,
-    state: String,
-    city: String
+    country: {
+        type: String,
+        default: ""
+    },
+    state: {
+        type: String,
+        default: ""
+    },
+    city: {
+        type: String,
+        default: ""
+    },
 }
 
 export const Contact = {
-    type : Map,
-    of : String
+    type: Map,
+    of: String
 }
 
 export const Profile = {
-    firstName : String,
-    lastName: String,
-    avatar : String,
-    avatarFilename: String,
-    avatarFileType: String,
-    banner : String,
-    bannerFilename: String,
-    bannerFileType: String,
-    gender : String,
-    birth : Date,
-    timezone: String,
+    firstName: {
+        type: String,
+        default: ""
+    },
+    lastName: {
+        type: String,
+        default: ""
+    },
+    fullName: {
+        type: String,
+        default: ""
+    },
+    avatar: {
+        type: String,
+        default: ""
+    },
+    gender: {
+        type: String,
+        enum: ["MALE", "FEMALE"],
+        default: "MALE"
+    },
+    birth: {
+        type: Date,
+        default: ""
+    },
     region: Region,
-    country : String,
-    state : String,
-    city : String,
-    profession: String,
-
-    telegram: String,
-    reddit: String,
-    wechat: String,
-    twitter: String,
-    facebook: String,
-    github: String,
-    linkedin: String,
-
-    portfolio: String,
-    skillset: [String],
-    bio: String,
-    motto: String,
-    beOrganizer : Boolean,
-    isDeveloper : Boolean,
-    source : String,
-    walletAddress : String
+    phone: {
+        type: String,
+        default: ""
+    }
 }
 
 export const WorkProject = {
-    startTime : Date,
-    endTime : Date,
-    description : String,
-    name : String
+    startTime: Date,
+    endTime: Date,
+    description: String,
+    name: String
 }
 
 export const WorkAbout = {
     status: String, // employed, student, etc
     employment: String, // company if employed / school if student
-    skill : [String],
-    project : [WorkProject],
-    resume : String,
+    skill: [String],
+    project: [WorkProject],
+    resume: String,
 
     notes: String // private internal notes visible only to admin/council
 }
@@ -86,59 +92,42 @@ const did = {
 }
 
 export const User = {
-    dids: [did],
-    username : {
-        type : String,
+    username: {
+        type: String,
         required: true,
-        index : true,
-        unique : true
+        index: true,
+        unique: true
     },
-    password : {
-        type : String,
-        required : true
+    password: {
+        type: String,
+        required: true
     },
     salt: {
         type: String,
         required: true
     },
-
     // let's keep this on the root object
-    email: String,
-    profile : Profile,
+    email: {
+        type: String,
+        default: "",
+        required: true
+    },
+    profile: Profile,
     defaultLanguage: String,
-    workAbout : WorkAbout,
+    workAbout: WorkAbout,
 
     // resetToken, ensure this is never returned
     resetToken: String,
 
     // constants.USER_ROLE
-    role : String,
-
-    // constants.USER_EMPOWER
-    empower: String,
-
-    elaOwed : [ELA],
-
-    notes: String, // private internal notes visible only to admin/council
-
-    // admin or council approved max event budget, defaults to 0
-    // decreases upon usage
-    elaBudget: [ELA],
-
-    votePower : [VotePower],
-    votePowerAmount : {
-        // TODO auto calculate with votePower
+    role: String,
+    notes: {
+        type: String,
+        default: ""
     },
-    active : {
-        type : Boolean,
-        default : false
-    },
-    logins: [Date],
-    circles: [{type: Schema.Types.ObjectId, ref: 'team'}],
-    comments: [[CommentSchema]],
-    subscribers: [SubscriberSchema],
-    popupUpdate: {
+    active: {
         type: Boolean,
         default: false
-    }
+    },
+    logins: [Date]
 }

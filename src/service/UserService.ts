@@ -1,8 +1,8 @@
 import Base from './Base'
-import {Document} from 'mongoose'
+import { Document } from 'mongoose'
 import * as _ from 'lodash'
-import {constant} from '../constant'
-import {geo} from '../utility/geo'
+import { constant } from '../constant'
+import { geo } from '../utility/geo'
 import * as uuid from 'uuid'
 import { validate, utilCrypto, mail, permissions, getDidPublicKey, logger } from '../utility'
 import CommunityService from './CommunityService'
@@ -30,14 +30,28 @@ export default class extends Base {
      * @param param
      * @returns {Promise<"mongoose".Document>}
      */
-    public async registerNewUser(param): Promise<Document>{
-        const db_user = this.getDBModel('User')
+    public async registerNewUser(param): Promise<Document> {
 
-        const username = param.username.toLowerCase()
-        const email = param.email.toLowerCase()
+        const db_user = this.getDBModel('User');
+
+        let {
+            username,
+            email,
+            country,
+            state,
+            city,
+            fullName,
+            avatar,
+            gender,
+            birth,
+            phone
+        } = param
+
+        username = param.username.toLowerCase()
+        email = param.email.toLowerCase()
 
         this.validate_username(username)
-        this.validate_password(param.password)
+        // this.validate_password(param.password)
         this.validate_email(email)
 
         // check username and email unique
@@ -52,42 +66,21 @@ export default class extends Base {
 
         const doc: any = {
             username,
-            password : this.getPassword(param.password, salt),
+            password: this.getPassword(constant.PASSWORD_DEFAULT, salt),
             email,
             salt,
             profile: {
-                firstName: param.firstName,
-                lastName: param.lastName,
-                country: param.country,
-                timezone: param.timezone,
-                state: param.state,
-                city: param.city,
-                beOrganizer: param.beOrganizer === 'yes',
-                isDeveloper: param.isDeveloper === 'yes',
-                source: param.source
+                avatar: avatar,
+                fullName: fullName,
+                gender: gender,
+                birth: birth,
+                phone: phone
             },
-            role : constant.USER_ROLE.MEMBER,
+            role: constant.USER_ROLE.MEMBER,
             active: true
         }
 
-        // simply validate did format
-        if (param.did && _.isString(param.did) && param.did.length === 46) {
-            const rs = param.did.split(':')
-            if (rs.length === 3 && rs[0] === 'did' && rs[1] === 'elastos') {
-                doc.dids = [{ id: param.did, active: true }]
-            }
-        }
-
-        if (process.env.NODE_ENV === 'test') {
-            if (param._id) {
-                doc._id = param._id.$oid
-            }
-        }
-
         const newUser = await db_user.save(doc)
-
-        await this.linkCountryCommunity(newUser)
-        this.sendConfirmation(doc)
 
         return newUser
     }
@@ -98,16 +91,16 @@ export default class extends Base {
         await db_user.update({ _id: param.userId }, { $push: { logins: new Date() } })
     }
 
-    public async getUserSalt(username): Promise<String>{
+    public async getUserSalt(username): Promise<String> {
         const isEmail = validate.email(username)
         username = username.toLowerCase()
 
-        const query = {[isEmail ? 'email' : 'username'] : username}
+        const query = { [isEmail ? 'email' : 'username']: username }
 
         const db_user = this.getDBModel('User')
         const user = await db_user.db.findOne(query)
 
-        if(!user){
+        if (!user) {
             throw 'invalid username or email'
         }
         return user.salt
@@ -133,8 +126,8 @@ export default class extends Base {
         const user = await db_user.getDBInstance().findOne({
             _id: userId,
             $or: [
-                {banned: {$exists: false}},
-                {banned: false}
+                { banned: { $exists: false } },
+                { banned: false }
             ]
         })
             .select(fields)
@@ -169,19 +162,19 @@ export default class extends Base {
     }
 
     public async updateRole(param) {
-      const { userId, role } = param
-      const db_user = this.getDBModel('User')
-      const userRole = _.get(this.currentUser, 'role')
-      const isUserAdmin = permissions.isAdmin(userRole)
+        const { userId, role } = param
+        const db_user = this.getDBModel('User')
+        const userRole = _.get(this.currentUser, 'role')
+        const isUserAdmin = permissions.isAdmin(userRole)
 
-      if (!isUserAdmin) {
-          throw 'Access Denied'
-      }
+        if (!isUserAdmin) {
+            throw 'Access Denied'
+        }
 
-      if(Object.keys(constant.USER_ROLE).indexOf(role) === -1){
-          throw 'invalid role'
-      }
-      return await db_user.update({ _id: userId }, { role })
+        if (Object.keys(constant.USER_ROLE).indexOf(role) === -1) {
+            throw 'invalid role'
+        }
+        return await db_user.update({ _id: userId }, { role })
     }
 
     public async update(param) {
@@ -246,9 +239,9 @@ export default class extends Base {
             updateObj.popupUpdate = param.popupUpdate
         }
 
-        await db_user.update({_id: userId}, updateObj)
+        await db_user.update({ _id: userId }, updateObj)
 
-        user = db_user.getDBInstance().findOne({_id: userId}).select(fields)
+        user = db_user.getDBInstance().findOne({ _id: userId }).select(fields)
             .populate('circles')
 
         // if we change the country, we add the new country as a community if not already
@@ -260,20 +253,20 @@ export default class extends Base {
         return user
     }
 
-    public async findUser(query): Promise<Document>{
+    public async findUser(query): Promise<Document> {
         const db_user = this.getDBModel('User')
         const isEmail = validate.email(query.username)
         return await db_user.getDBInstance().findOne({
             [isEmail ? 'email' : 'username']: query.username.toLowerCase(),
             password: query.password,
             $or: [
-                {banned: {$exists: false}},
-                {banned: false}
+                { banned: { $exists: false } },
+                { banned: false }
             ]
         }).select(selectFields).populate('circles')
     }
 
-    public async findUserByDid(did: string): Promise<Document>{
+    public async findUserByDid(did: string): Promise<Document> {
         const db_user = this.getDBModel('User')
         const query = {
             dids: { $elemMatch: { id: did, active: true } }
@@ -281,12 +274,12 @@ export default class extends Base {
         return await db_user.getDBInstance().findOne(query, selectFields)
     }
 
-    public async findUsers(query): Promise<Document[]>{
+    public async findUsers(query): Promise<Document[]> {
         const db_user = this.getDBModel('User')
 
         return await db_user.getDBInstance().find({
-            '_id' : {
-                $in : query.userIds
+            '_id': {
+                $in: query.userIds
             }
         }).select(strictSelectFields)
     }
@@ -298,21 +291,21 @@ export default class extends Base {
     * - TODO: may need sorting by full name for Empower 35? Or something else?
     ************************************************************************************
      */
-    public async findAll(query): Promise<Object>{
+    public async findAll(query): Promise<Object> {
         const db_user = this.getDBModel('User')
 
         const finalQuery: any = {
             active: true,
-            archived: {$ne: true}
+            archived: { $ne: true }
         }
 
         if (query.search) {
             finalQuery.$and = _.map(_.trim(query.search).split(' '), (part) => {
                 return {
                     $or: [
-                        { 'profile.firstName': { $regex: part, $options: 'i' }},
-                        { 'profile.lastName': { $regex: part, $options: 'i' }},
-                        { username: { $regex: part, $options: 'i' }}
+                        { 'profile.firstName': { $regex: part, $options: 'i' } },
+                        { 'profile.lastName': { $regex: part, $options: 'i' } },
+                        { username: { $regex: part, $options: 'i' } }
                     ]
                 }
             })
@@ -341,7 +334,7 @@ export default class extends Base {
             cursor.skip(results * (page - 1)).limit(results)
         }
 
-        cursor.select(strictSelectFields).sort({username: 1})
+        cursor.select(strictSelectFields).sort({ username: 1 })
 
         const users = await cursor
         const total = await totalCursor
@@ -372,10 +365,10 @@ export default class extends Base {
         }
     }
 
-    public async changePassword(param): Promise<boolean>{
+    public async changePassword(param): Promise<boolean> {
         const db_user = this.getDBModel('User')
 
-        const {oldPassword, password} = param
+        const { oldPassword, password } = param
         const username = param.username.toLowerCase()
         const userRole = _.get(this.currentUser, 'role')
         const isUserAdmin = permissions.isAdmin(userRole)
@@ -389,22 +382,22 @@ export default class extends Base {
             throw 'Access Denied'
         }
 
-        let user = await db_user.findOne({username}, {reject: false})
-        if(!user){
+        let user = await db_user.findOne({ username }, { reject: false })
+        if (!user) {
             throw 'user does not exist'
         }
 
-        if(user.password !== this.getPassword(oldPassword, user.salt)){
+        if (user.password !== this.getPassword(oldPassword, user.salt)) {
             throw 'old password is incorrect'
         }
 
-        const res = await db_user.update({username}, {
-            $set : {
-                password : this.getPassword(password, user.salt)
+        const res = await db_user.update({ username }, {
+            $set: {
+                password: this.getPassword(password, user.salt)
             }
         })
 
-        user = db_user.getDBInstance().findOne({username})
+        user = db_user.getDBInstance().findOne({ username })
             .populate('circles')
 
         return user
@@ -419,7 +412,7 @@ export default class extends Base {
      */
     public async forgotPassword(param) {
 
-        const {email} = param
+        const { email } = param
 
         console.log(`forgotPassword called on email: ${email}`)
 
@@ -430,7 +423,7 @@ export default class extends Base {
             active: true
         })
 
-        if (!userEmailMatch){
+        if (!userEmailMatch) {
             console.error('no user matched')
             return
         }
@@ -459,7 +452,7 @@ export default class extends Base {
     public async resetPassword(param) {
 
         const db_user = this.getDBModel('User')
-        const {resetToken, password} = param
+        const { resetToken, password } = param
 
         this.validate_password(password)
 
@@ -473,7 +466,7 @@ export default class extends Base {
             throw 'token invalid'
         }
 
-        const result = await db_user.update({_id: userMatchedByToken._id}, {
+        const result = await db_user.update({ _id: userMatchedByToken._id }, {
             $set: {
                 password: this.getPassword(password, userMatchedByToken.salt)
             },
@@ -495,9 +488,9 @@ export default class extends Base {
     *
     * param : user's elaBudget
     * */
-    public getSumElaBudget(ela){
+    public getSumElaBudget(ela) {
         let total = 0
-        _.each(ela, (item)=>{
+        _.each(ela, (item) => {
             total += item.amount
         })
 
@@ -509,22 +502,22 @@ export default class extends Base {
     * password is built with sha512 to (password + salt)
     *
     * */
-    public getPassword(password, salt){
-        return utilCrypto.sha512(password+salt)
+    public getPassword(password, salt) {
+        return utilCrypto.sha512(password + salt)
     }
 
-    public validate_username(username){
-        if(!validate.valid_string(username, 6)){
+    public validate_username(username) {
+        if (!validate.valid_string(username, 6)) {
             throw 'invalid username'
         }
     }
-    public validate_password(password){
-        if(!validate.valid_string(password, 8)){
+    public validate_password(password) {
+        if (!validate.valid_string(password, 8)) {
             throw 'invalid password'
         }
     }
-    public validate_email(email){
-        if(!validate.email(email)){
+    public validate_email(email) {
+        if (!validate.email(email)) {
             throw 'invalid email'
         }
     }
@@ -540,7 +533,7 @@ export default class extends Base {
      */
     public async sendEmail(param) {
 
-        const {fromUserId, toUserId, subject, message} = param
+        const { fromUserId, toUserId, subject, message } = param
 
         // ensure fromUser is logged in
         if (this.currentUser._id.toString() !== fromUserId) {
@@ -561,11 +554,11 @@ export default class extends Base {
             ${message}
         `
 
-        if (!fromUser){
+        if (!fromUser) {
             throw 'From user not found'
         }
 
-        if (!toUser){
+        if (!toUser) {
             throw 'From user not found'
         }
 
@@ -700,7 +693,7 @@ export default class extends Base {
             )
             const url = `elastos://credaccess/${jwtToken}`
             return { success: true, url }
-        } catch(err) {
+        } catch (err) {
             logger.error(err)
             return { success: false }
         }
@@ -725,7 +718,7 @@ export default class extends Base {
                     message: 'Can not get public key.'
                 }
             }
-    
+
             // verify response data from ela wallet
             return jwt.verify(jwtToken, rs.publicKey, async (err: any, decoded: any) => {
                 if (err) {
@@ -734,7 +727,7 @@ export default class extends Base {
                         success: false,
                         message: 'Verify signatrue failed.'
                     }
-                  } else {
+                } else {
                     if (!decoded.req) {
                         return {
                             code: 400,
@@ -764,7 +757,7 @@ export default class extends Base {
                         }
 
                         const user = await db_user.findById({ _id: result.userId })
-                        if (user) { 
+                        if (user) {
                             let dids: object[]
                             const matched = user.dids.find(el => el.id === decoded.iss)
                             // associate the same DID
@@ -795,10 +788,10 @@ export default class extends Base {
                                     }
                                     return el
                                 })
-                                dids = [ ...inactiveDids, { id: decoded.iss, active: true, expirationDate: rs.expirationDate } ]
+                                dids = [...inactiveDids, { id: decoded.iss, active: true, expirationDate: rs.expirationDate }]
                             }
                             await db_user.update(
-                                { _id: result.userId }, 
+                                { _id: result.userId },
                                 { $set: { dids } }
                             )
                             return {
@@ -820,9 +813,9 @@ export default class extends Base {
                             message: 'Something went wrong'
                         }
                     }
-                  }
+                }
             })
-        } catch(err) {
+        } catch (err) {
             logger.error(err)
             return {
                 code: 500,
@@ -835,14 +828,14 @@ export default class extends Base {
     public async getDid() {
         const userId = this.currentUser._id
         const db_user = this.getDBModel('User')
-        const user = await db_user.findById({_id: userId})
+        const user = await db_user.findById({ _id: userId })
         if (user && user.dids) {
             const did = user.dids.find(el => el.active === true)
             if (did && !did.mark) {
                 return { success: true, did }
             } else {
                 return { success: false }
-            }   
+            }
         } else {
             return { success: false }
         }
@@ -859,7 +852,7 @@ export default class extends Base {
                     domain: process.env.SERVER_URL,
                     logo: `${process.env.SERVER_URL}/assets/images/logo.svg`
                 }
-            } 
+            }
             const jwtToken = jwt.sign(
                 jwtClaims,
                 process.env.APP_PRIVATE_KEY,
@@ -867,7 +860,7 @@ export default class extends Base {
             )
             const url = `elastos://credaccess/${jwtToken}`
             return { success: true, url }
-        } catch(err) {
+        } catch (err) {
             logger.error(err)
             return { success: false }
         }
@@ -892,7 +885,7 @@ export default class extends Base {
                     message: 'Can not get public key.'
                 }
             }
-    
+
             // verify response data from ela wallet
             return jwt.verify(jwtToken, rs.publicKey, async (err: any, decoded: any) => {
                 if (err) {
@@ -901,7 +894,7 @@ export default class extends Base {
                         success: false,
                         message: 'Verify signatrue failed.'
                     }
-                  } else {
+                } else {
                     try {
                         const payload: any = jwt.decode(decoded.req.slice('elastos://credaccess/'.length))
                         if (!payload || (payload && !payload.nonce)) {
@@ -939,9 +932,9 @@ export default class extends Base {
                             message: 'Something went wrong'
                         }
                     }
-                  }
+                }
             })
-        } catch(err) {
+        } catch (err) {
             logger.error(err)
             return {
                 code: 500,
@@ -961,7 +954,7 @@ export default class extends Base {
                 return { success: false }
             }
             return jwt.verify(jwtToken, process.env.APP_PUBLIC_KEY, async (err: any, decoded: any) => {
-                if(err) {
+                if (err) {
                     return { success: false }
                 }
                 try {
