@@ -14,11 +14,11 @@ import AccessControl from './utility/accessControl'
 import db from './db'
 import { logger } from './utility'
 
-import router, {middleware} from './router'
+import router, { middleware } from './router'
 
 import './config'
 
-(async ()=>{
+(async () => {
     const app = express()
     const DB = await db.create()
     const permissions = await DB.getModel('Permission').find()
@@ -36,7 +36,7 @@ import './config'
 
     morgan.format('ebp', '[Backend] :method :url :status :res[content-length] - :response-time ms')
     app.use(morgan('ebp'))
-    app.use(morgan('common', {stream: fs.createWriteStream('./access.log', {flags: 'a'})}))
+    app.use(morgan('common', { stream: fs.createWriteStream('./access.log', { flags: 'a' }) }))
 
 
     app.use(helmet())
@@ -45,7 +45,7 @@ import './config'
         limit: '2mb'
     }
     app.use(bodyParser.json(bodyParserOptions))
-    app.use(bodyParser.urlencoded({extended: false}))
+    app.use(bodyParser.urlencoded({ extended: false }))
 
     const SessionStore = ConnectMongo(session)
     app.use(session({
@@ -58,7 +58,7 @@ import './config'
         resave: false,
         cookie: {
             secure: false,
-            maxAge: 1000*60*60*24*30 // 30 days
+            maxAge: 1000 * 60 * 60 * 24 * 30 // 30 days
         }
     }))
 
