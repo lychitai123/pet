@@ -1,4 +1,5 @@
-import * as mongoose from 'mongoose'
+import * as mongoose from 'mongoose';
+
 import Test from './Test'
 import User from './User'
 import Team from './Team'
@@ -40,27 +41,28 @@ export default class {
   }
 
   public async start(): Promise<mongoose.ConnectionBase> {
-    const url = process.env.DB_URL
-    const db = await mongoose.createConnection(url, {
-        useNewUrlParser: true,
-      })
-    this.connection = db
+    console.log('----------------------------------------');
+    const url = process.env.DB_URL || 'mongodb://localhost:27017/EBH';
+    console.log(url);
+    const db = await mongoose.createConnection(url,
+      {
+        useNewUrlParser: true
+      }
+    );
+    this.connection = db;
 
     // Setup callback
-    this.connection.on('error', this.handleDBError)
+    await this.connection.on('error', this.handleDBError);
 
-    this.connection.on('disconnected', this.handleUnexpectedDisconnect)
+    await this.connection.on('disconnected', this.handleUnexpectedDisconnect);
 
-    this.connection.on('reconnected', function() {
-      console.log('MongoDB reconnected!')
-    })
+    await this.connection.on('reconnected', function () {
+      console.log('MongoDB reconnected!');
+    });
 
-    this.initDB(db)
-    await this.initTest()
-
-    await this.prepareRecord()
-
-    return db
+    await this.initDB(db);
+    await this.prepareRecord();
+    return await db;
   }
 
   private handleDBError() {
