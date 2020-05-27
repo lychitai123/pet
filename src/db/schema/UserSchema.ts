@@ -72,25 +72,6 @@ export const WorkAbout = {
     notes: String // private internal notes visible only to admin/council
 }
 
-// amount is ELA * 1000
-export const ELA = {
-    address: String,
-    amount: Schema.Types.Number
-}
-
-export const VotePower = {
-    amount: Number,
-    expired: Date
-}
-
-const did = {
-    id: String,
-    expirationDate: Date,
-    active: Boolean,
-    mark: Boolean,
-    _id: false
-}
-
 export const User = {
     username: {
         type: String,
@@ -115,10 +96,8 @@ export const User = {
     profile: Profile,
     defaultLanguage: String,
     workAbout: WorkAbout,
-
     // resetToken, ensure this is never returned
     resetToken: String,
-
     // constants.USER_ROLE
     role: String,
     notes: {

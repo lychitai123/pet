@@ -56,10 +56,10 @@ export default class extends Base {
 
         // check username and email unique
         if (await db_user.findOne({ username })) {
-            throw 'This username is already taken'
+            throw 'USERNAME_HAS_EXISTED'
         }
         if (await db_user.findOne({ email: email })) {
-            throw 'This email is already taken'
+            throw 'EMAIL_HAS_EXISTED'
         }
 
         const salt = uuid.v4()
