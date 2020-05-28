@@ -94,10 +94,14 @@ router.use('/teamCandidate', teamCandidate)
 router.use('/submission', submission)
 router.use('/suggestion', suggestion)
 router.use('/sso', sso)
-router.use('/user', user)
 router.use('/upload', upload)
 router.use('/elip', elip)
 router.use('/elipReview', elipReview)
+
+// Route Client
+
+// Route CMS
+router.use('/cms/user', user)
 
 router.use((req, res) => {
     return res.sendStatus(403)

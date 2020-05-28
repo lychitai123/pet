@@ -26,6 +26,9 @@ import loginCallbackEla from './login_callback_ela'
 import getDid from './get_did'
 import checkElaAuth from './check_ela_auth'
 
+// CMS
+import insert_information from '../user/cms/insert_profile'
+
 export default Base.setRouter([
     {
         path: '/logout',
@@ -33,39 +36,39 @@ export default Base.setRouter([
         method: 'get'
     },
     {
-        path : '/login',
-        router : login,
-        method : 'get'
+        path: '/login',
+        router: login,
+        method: 'get'
     },
     {
-        path : '/register',
-        router : register,
-        method : 'post'
+        path: '/register',
+        router: register,
+        method: 'post'
     },
     {
-        path : '/:userId',
-        router : update,
-        method : 'put'
+        path: '/:userId',
+        router: update,
+        method: 'put'
     },
     {
-        path : '/:userId/updateRole',
-        router : updateRole,
-        method : 'put'
+        path: '/:userId/updateRole',
+        router: updateRole,
+        method: 'put'
     },
     {
-        path : '/public/:userId',
-        router : get,
-        method : 'get'
+        path: '/public/:userId',
+        router: get,
+        method: 'get'
     },
     {
-        path : '/send-email',
-        router : send_email,
-        method : 'post'
+        path: '/send-email',
+        router: send_email,
+        method: 'post'
     },
     {
-        path : '/send-code',
-        router : send_reg_email,
-        method : 'post'
+        path: '/send-code',
+        router: send_reg_email,
+        method: 'post'
     },
     {
         path: '/send-confirm',
@@ -78,54 +81,54 @@ export default Base.setRouter([
         method: 'post'
     },
     {
-        path : '/current_user',
-        router : current_user,
-        method : 'get'
+        path: '/current_user',
+        router: current_user,
+        method: 'get'
     },
     {
-        path : '/change_password',
-        router : change_password,
-        method : 'get'
+        path: '/change_password',
+        router: change_password,
+        method: 'get'
     },
     {
-        path : '/forgot-password',
-        router : forgot_password,
-        method : 'post'
+        path: '/forgot-password',
+        router: forgot_password,
+        method: 'post'
     },
     {
-        path : '/reset-password',
-        router : reset_password,
-        method : 'post'
+        path: '/reset-password',
+        router: reset_password,
+        method: 'post'
     },
     {
-        path : '/:userIds/users',
-        router : list_users,
-        method : 'get'
+        path: '/:userIds/users',
+        router: list_users,
+        method: 'get'
     },
     {
-        path : '/list',
-        router : list_users,
-        method : 'get'
+        path: '/list',
+        router: list_users,
+        method: 'get'
     },
     {
-        path : '/getCouncilMembers',
-        router : getCouncilMembers,
-        method : 'get'
+        path: '/getCouncilMembers',
+        router: getCouncilMembers,
+        method: 'get'
     },
     {
-        path : '/:id/comment',
-        router : comment,
-        method : 'post'
+        path: '/:id/comment',
+        router: comment,
+        method: 'post'
     },
     {
-        path : '/:id/subscribe',
-        router : subscribe,
-        method : 'post'
+        path: '/:id/subscribe',
+        router: subscribe,
+        method: 'post'
     },
     {
-        path : '/:id/unsubscribe',
-        router : unsubscribe,
-        method : 'post'
+        path: '/:id/unsubscribe',
+        router: unsubscribe,
+        method: 'post'
     },
     {
         path: '/ela-url',
@@ -155,6 +158,13 @@ export default Base.setRouter([
     {
         path: '/check-ela-auth',
         router: checkElaAuth,
+        method: 'post'
+    },
+    // ============== //
+
+    {
+        path: '/insert_information',
+        router: insert_information,
         method: 'post'
     }
 ])

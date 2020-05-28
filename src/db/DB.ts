@@ -22,6 +22,7 @@ import Elip_Review from './Elip_Review'
 import Suggestion_Edit_History from './Suggestion_Edit_History'
 import Vid from './Vid'
 import Did from './Did'
+import Role from './Role'
 
 import Log from './Log'
 
@@ -44,11 +45,12 @@ export default class {
     console.log('----------------------------------------');
     const url = process.env.DB_URL || 'mongodb://localhost:27017/EBH';
     console.log(url);
-    const db = await mongoose.createConnection(url,
-      {
-        useNewUrlParser: true
-      }
-    );
+    const db = await mongoose.createConnection(url)
+    mongoose.set('useNewUrlParser', true)
+    mongoose.set('useUnifiedTopology', true)
+    mongoose.set('useFindAndModify', false),
+    mongoose.set('useCreateIndex', true)
+
     this.connection = db;
 
     // Setup callback
@@ -61,7 +63,7 @@ export default class {
     });
 
     await this.initDB(db);
-    await this.prepareRecord();
+    // await this.prepareRecord();
     return await db;
   }
 
@@ -121,6 +123,7 @@ export default class {
     this.db.Suggestion_Edit_History = new Suggestion_Edit_History(db)
     this.db.Vid = new Vid(db)
     this.db.Did = new Did(db)
+    this.db.Role = new Role(db)
   }
 
   public getModel(name: string) {
@@ -131,35 +134,35 @@ export default class {
     return rs
   }
 
-  private async prepareRecord() {
-    // create admin user
-    const salt = uuid.v4()
-    const password = utilCrypto.sha512(process.env.ADMIN_PASSWORD + salt)
-    const doc = {
-      username: process.env.ADMIN_USERNAME,
-      password,
-      salt,
-      email: 'admin@ebp.com',
-      role: 'ADMIN',
-      active: true,
-      profile: {
-        firstName: 'Admin',
-        lastName: 'Ebp',
-        region: {
-          country: 'China',
-          city: ''
-        }
-      }
-    }
-    try {
-      const rs = await this.db.User.save(doc)
-      console.log('create admin user =>', rs)
-    } catch (err) {
-      if (err.code === 11000) {
-        console.log('admin user already exists')
-      } else {
-        console.error(err)
-      }
-    }
-  }
+  // private async prepareRecord() {
+  //   // create admin user
+  //   const salt = uuid.v4()
+  //   const password = utilCrypto.sha512(process.env.ADMIN_PASSWORD + salt)
+  //   const doc = {
+  //     username: process.env.ADMIN_USERNAME,
+  //     password,
+  //     salt,
+  //     email: 'admin@ebp.com',
+  //     role: 'ADMIN',
+  //     active: true,
+  //     profile: {
+  //       firstName: 'Admin',
+  //       lastName: 'Ebp',
+  //       region: {
+  //         country: 'China',
+  //         city: ''
+  //       }
+  //     }
+  //   }
+  //   try {
+  //     const rs = await this.db.User.save(doc)
+  //     console.log('create admin user =>', rs)
+  //   } catch (err) {
+  //     if (err.code === 11000) {
+  //       console.log('admin user already exists')
+  //     } else {
+  //       console.error(err)
+  //     }
+  //   }
+  // }
 }

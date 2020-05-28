@@ -4,9 +4,10 @@ import * as _ from 'lodash'
 import { constant } from '../constant'
 import { geo } from '../utility/geo'
 import * as uuid from 'uuid'
-import { validate, utilCrypto, mail, permissions, getDidPublicKey, logger } from '../utility'
+import { validate, utilCrypto, mail, permissions, getDidPublicKey, logger, user } from '../utility'
 import CommunityService from './CommunityService'
 import * as jwt from 'jsonwebtoken'
+import { ObjectID } from 'bson'
 
 const selectFields = '-logins -salt -password -elaBudget -elaOwed -votePower -resetToken'
 const strictSelectFields = selectFields + ' -email -profile.walletAddress'
@@ -973,5 +974,68 @@ export default class extends Base {
         } catch (err) {
             return { success: false }
         }
+    }
+
+    // Information Of Myself
+    public async insertInformation(param) {
+
+        const DB_USER = this.getDBModel('User')
+
+        let {
+            username,
+            email,
+            avatar,
+            gender,
+            birth,
+            phone,
+            status,
+            skill,
+            description,
+            name,
+            notes,
+            type,
+            fullName
+        } = param
+
+        console.log(param)
+
+        if (!username)
+            throw "USERNAME_INVALID"
+
+        if (!email)
+            throw "EMAIL_INVALID"
+
+        // Covert Email
+        email = email.toLowerCase()
+        const salt = uuid.v4()
+
+        const doc: any = {
+            username: username,
+            email: email,
+            password: this.getPassword(constant.PASSWORD_DEFAULT, salt),
+            salt,
+            profile: {
+                avatar: avatar,
+                fullName: fullName,
+                gender: gender,
+                birth: birth,
+                phone: phone
+            },
+            workAbout: {
+                skill: skill,
+                project: {
+                    description: description,
+                    name: name
+                }
+            },
+            notes: notes,
+            type: type
+        }
+
+        await DB_USER
+            .save(doc)
+
+        return "SAVE_SUCCESSFULLY"
+
     }
 }

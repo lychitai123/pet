@@ -1,5 +1,4 @@
 import {Schema} from 'mongoose'
-import {ELA, VotePower} from './UserSchema'
 import {constant} from '../../constant'
 import {CommentSchema} from './CommentSchema'
 import {SubscriberSchema} from './SubscriberSchema'

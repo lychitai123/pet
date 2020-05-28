@@ -1,6 +1,4 @@
 import { Schema } from 'mongoose'
-import { CommentSchema } from './CommentSchema'
-import { SubscriberSchema } from './SubscriberSchema'
 
 export const Region = {
     country: {
@@ -15,11 +13,6 @@ export const Region = {
         type: String,
         default: ""
     },
-}
-
-export const Contact = {
-    type: Map,
-    of: String
 }
 
 export const Profile = {
@@ -56,20 +49,44 @@ export const Profile = {
 }
 
 export const WorkProject = {
-    startTime: Date,
-    endTime: Date,
-    description: String,
-    name: String
+    startTime: {
+        type: Date,
+        default: null
+    },
+    endTime: {
+        type: Date,
+        default: null
+    },
+    description: {
+        type: String,
+        default: ""
+    },
+    name: {
+        type: String,
+        default: ""
+    }
 }
 
 export const WorkAbout = {
-    status: String, // employed, student, etc
-    employment: String, // company if employed / school if student
-    skill: [String],
+    status: {
+        type: String,
+        default: ""
+    },
+    employment: {
+        type: String,
+        default: ""
+    },
+    skill: [
+        {
+            type: String,
+            default: ""
+        }
+    ],
     project: [WorkProject],
-    resume: String,
-
-    notes: String // private internal notes visible only to admin/council
+    notes: {
+        type: String,
+        default: ""
+    }
 }
 
 export const User = {
@@ -98,15 +115,21 @@ export const User = {
     workAbout: WorkAbout,
     // resetToken, ensure this is never returned
     resetToken: String,
-    // constants.USER_ROLE
-    role: String,
+    role: {
+        type: Schema.Types.ObjectId,
+        ref: "Role"
+    },
     notes: {
         type: String,
         default: ""
     },
     active: {
         type: Boolean,
-        default: false
+        default: true
+    },
+    type: {
+        type: String,
+        required: true
     },
     logins: [Date]
 }
