@@ -985,16 +985,18 @@ export default class extends Base {
             username,
             email,
             avatar,
-            gender,
-            birth,
-            phone,
-            status,
             skill,
             description,
             name,
-            notes,
-            type,
-            fullName
+            firstName,
+            lastName,
+            company,
+            personalDescription,
+            employment,
+            address,
+            city,
+            country,
+            postCode
         } = param
 
         console.log(param)
@@ -1007,7 +1009,10 @@ export default class extends Base {
 
         // Covert Email
         email = email.toLowerCase()
+        // Randon Salt
         const salt = uuid.v4()
+        // Create_Fullname
+        let fullName = firstName.concat(lastName)
 
         const doc: any = {
             username: username,
@@ -1015,21 +1020,18 @@ export default class extends Base {
             password: this.getPassword(constant.PASSWORD_DEFAULT, salt),
             salt,
             profile: {
-                avatar: avatar,
                 fullName: fullName,
-                gender: gender,
-                birth: birth,
-                phone: phone
+                firstName: firstName,
+                lastName: lastName,
+                personalDescription: personalDescription,
+                address: address,
+                region: {
+                    city: city,
+                    country: country,
+                    postCode: postCode
+                },
             },
-            workAbout: {
-                skill: skill,
-                project: {
-                    description: description,
-                    name: name
-                }
-            },
-            notes: notes,
-            type: type
+            type: "ADMIN"
         }
 
         await DB_USER

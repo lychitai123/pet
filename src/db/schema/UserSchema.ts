@@ -13,6 +13,10 @@ export const Region = {
         type: String,
         default: ""
     },
+    postCode: {
+        type: String,
+        default: ""
+    },
 }
 
 export const Profile = {
@@ -45,6 +49,14 @@ export const Profile = {
     phone: {
         type: String,
         default: ""
+    },
+    personalDescription: {
+        type: String,
+        default: ""
+    },
+    address: {
+        type: String,
+        default: ""
     }
 }
 
@@ -68,6 +80,10 @@ export const WorkProject = {
 }
 
 export const WorkAbout = {
+    company: {
+        type: String,
+        default: ""
+    },
     status: {
         type: String,
         default: ""
