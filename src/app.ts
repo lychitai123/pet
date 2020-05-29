@@ -70,8 +70,10 @@ import './config'
     AccessControl(prefix, app, permissions)
 
     app.use(prefix, router);
+
     app.use('/assets', express.static(path.join(__dirname, '../web/assets')));
-    app.use('/static', express.static(path.join(__dirname, '../web/static')));
+    // app.use('/static', express.static(path.join(__dirname, '../web/static')));
+
     app.use((req, res) => {
         console.log(__dirname)
         res.sendFile(path.join(__dirname, '../web/index.html'));
