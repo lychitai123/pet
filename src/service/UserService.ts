@@ -9,6 +9,9 @@ import CommunityService from './CommunityService'
 import * as jwt from 'jsonwebtoken'
 import { ObjectID } from 'bson'
 
+import * as mongoose from 'mongoose';
+const ObjectId = mongoose.Types.ObjectId
+
 const selectFields = '-logins -salt -password -elaBudget -elaOwed -votePower -resetToken'
 const strictSelectFields = selectFields + ' -email -profile.walletAddress'
 
@@ -1038,6 +1041,125 @@ export default class extends Base {
             .save(doc)
 
         return "SAVE_SUCCESSFULLY"
+
+    }
+
+    public async getProfile(param) {
+
+        const DB_USER = this.getDBModel('User').getDBInstance();
+
+        const {
+            userId
+        } = param
+
+        // const checkUser = await DB_USER
+        //     .findById(userId)
+
+        // if (!checkUser)
+        //     throw "USER_NOT_FOUND"
+
+        let query: any = [
+            {
+                $match: {
+                    active: true,
+                    _id: ObjectId("5ecff019f3eb381c0e0f32be")
+                }
+            },
+            {
+                $addFields: {
+                    country: "$profile.region.country",
+                    city: "$profile.region.city",
+                    postCode: "$profile.region.postCode"
+                }
+            },
+            {
+                $project: {
+                    username: { $ifNull: ["$username", ""] },
+                    email: { $ifNull: ["$email", ""] },
+                    profile: {
+                        firstName: 1,
+                        lastName: 1,
+                        avatar: 1,
+                        gender: 1,
+                        address: 1,
+                        personalDescription: 1
+                    },
+                    country: 1,
+                    city: 1,
+                    postCode: 1,
+                    type: { $ifNull: ["$type", ""] }
+                }
+            }
+        ]
+
+        const rs = await DB_USER
+            .aggregate(query)
+
+        return rs[0] ? rs[0] : []
+
+    }
+
+    public async editProfile(param) {
+
+        const DB_USER = this.getDBModel('User').getDBInstance();
+
+        const {
+            userId,
+            username,
+            email,
+            avatar,
+            skill,
+            description,
+            name,
+            firstName,
+            lastName,
+            company,
+            personalDescription,
+            employment,
+            address,
+            city,
+            country,
+            postCode
+        } = param
+
+        let fullName = firstName.concat(lastName);
+
+        // CheckUser
+        const checkUser = await DB_USER
+            .findById(userId)
+
+        if (!checkUser)
+            throw "USER_NOT_FOUND"
+
+        const doc: any = {
+            username: username,
+            email: email,
+            profile: {
+                fullName: fullName,
+                firstName: firstName,
+                lastName: lastName,
+                personalDescription: personalDescription,
+                address: address,
+                region: {
+                    city: city,
+                    country: country,
+                    postCode: postCode
+                },
+            },
+            type: "ADMIN"
+        }
+
+        await DB_USER
+            .updateOne(
+                {
+                    _id: ObjectId(userId)
+                },
+                {
+                    $set: { ...doc }
+                }
+            )
+
+        return "UPDATE_PROFILE_SUCCESSFULLY"
 
     }
 }
