@@ -1146,7 +1146,8 @@ export default class extends Base {
                     postCode: postCode
                 },
             },
-            type: "ADMIN"
+            type: "ADMIN",
+            // role: "ADMIN_FULL_PERMISSIONS"
         }
 
         await DB_USER

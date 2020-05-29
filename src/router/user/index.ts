@@ -29,7 +29,7 @@ import checkElaAuth from './check_ela_auth'
 // CMS
 import insert_information from '../user/cms/insert_profile'
 import view_profile from '../user/cms/view_profile'
-
+import edit_profile from '../user/cms/edit_profile'
 
 export default Base.setRouter([
     {
@@ -162,7 +162,7 @@ export default Base.setRouter([
         router: checkElaAuth,
         method: 'post'
     },
-    // ============== //
+    // ======== CMS Profile ====== //
 
     {
         path: '/insert_information',
@@ -173,5 +173,10 @@ export default Base.setRouter([
         path: '/view_profile',
         router: view_profile,
         method: 'get'
+    },
+    {
+        path: '/edit_profile/:userId',
+        router: edit_profile,
+        method: 'put'
     }
 ])

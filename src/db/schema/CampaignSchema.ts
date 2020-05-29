@@ -1,5 +1,4 @@
 import {Schema} from 'mongoose'
-import {ELA, VotePower} from './UserSchema'
 
 /*
 *****************************************************************
@@ -12,8 +11,8 @@ export const CampaignOutput = {
 }
 
 export const CampaignReward = {
-    ela : ELA,
-    votePower : VotePower
+    ela : String,
+    votePower : String
 }
 
 export const CampaignCandidate = {
