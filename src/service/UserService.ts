@@ -5,7 +5,6 @@ import { constant } from '../constant'
 import { geo } from '../utility/geo'
 import * as uuid from 'uuid'
 import { validate, utilCrypto, mail, permissions, getDidPublicKey, logger, user } from '../utility'
-import CommunityService from './CommunityService'
 import * as jwt from 'jsonwebtoken'
 import { ObjectID } from 'bson'
 
@@ -179,82 +178,6 @@ export default class extends Base {
             throw 'invalid role'
         }
         return await db_user.update({ _id: userId }, { role })
-    }
-
-    public async update(param) {
-        const { userId } = param
-        const updateObj: any = _.omit(param, restrictedFields.update)
-        const db_user = this.getDBModel('User')
-        let user = await db_user.findById(userId)
-        const isSelf = _.get(this.currentUser, '_id', '').toString() === userId
-        const userRole = _.get(this.currentUser, 'role')
-        const isUserAdmin = permissions.isAdmin(userRole)
-        const canUpdate = isUserAdmin || isSelf
-        let countryChanged = false
-        let fields = (isUserAdmin || isSelf) ? selectFields : strictSelectFields
-
-        if (!canUpdate) {
-            throw 'Access Denied'
-        }
-
-        if (!user) {
-            throw `userId: ${userId} not found`
-        }
-
-        if (param.profile && param.profile.country && param.profile.country !== user.profile.country) {
-            countryChanged = true
-        }
-
-        if (param.profile) {
-            updateObj.profile = Object.assign(user.profile, param.profile)
-
-            if (param.profile.skillset) {
-                updateObj.profile.skillset = param.profile.skillset
-            }
-        }
-
-        if (param.timezone) {
-            updateObj.timezone = param.timezone
-        }
-
-        if (param.email) {
-            updateObj.email = param.email
-        }
-
-        if (param.password) {
-            const salt = uuid.v4()
-            updateObj.password = this.getPassword(param.password, salt)
-            updateObj.salt = salt
-        }
-
-        if (param.removeAttachment) {
-            updateObj.avatar = undefined
-            updateObj.avatarFileType = ''
-            updateObj.avatarFilename = ''
-        }
-
-        if (param.removeBanner) {
-            updateObj.banner = undefined
-            updateObj.bannerFileType = ''
-            updateObj.bannerFilename = ''
-        }
-
-        if (param.popupUpdate) {
-            updateObj.popupUpdate = param.popupUpdate
-        }
-
-        await db_user.update({ _id: userId }, updateObj)
-
-        user = db_user.getDBInstance().findOne({ _id: userId }).select(fields)
-            .populate('circles')
-
-        // if we change the country, we add the new country as a community if not already
-        // keep the old one too - TODO: think through this logic, maybe we only keep the old one if the new one already exists
-        if (countryChanged) {
-            await this.linkCountryCommunity(user)
-        }
-
-        return user
     }
 
     public async findUser(query): Promise<Document> {
@@ -610,37 +533,7 @@ export default class extends Base {
         return true
     }
 
-    private async linkCountryCommunity(user) {
-        const db_community = this.getDBModel('Community')
-        const communityService = this.getService(CommunityService)
-
-        if (!user.profile || _.isEmpty(user.profile.country)) {
-            return
-        }
-
-        // 1st check if the country already exists
-        let countryCommunity = await db_community.findOne({
-            type: constant.COMMUNITY_TYPE.COUNTRY,
-            geolocation: user.profile.country
-        })
-
-        if (!countryCommunity) {
-            // create the country then attach
-            countryCommunity = await communityService.create({
-                name: geo.geolocationMap[user.profile.country],
-                type: constant.COMMUNITY_TYPE.COUNTRY,
-                geolocation: user.profile.country,
-                parentCommunityId: undefined
-            })
-
-        }
-
-        // now we should always have the community to attach it
-        await communityService.addMember({
-            userId: user._id,
-            communityId: countryCommunity._id
-        })
-    }
+    
 
     public async checkEmail(param) {
         const db_user = this.getDBModel('User')
