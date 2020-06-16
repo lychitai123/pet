@@ -1,4 +1,4 @@
-import {Response, Request, Router} from 'express'
+import { Response, Request, Router } from 'express'
 import * as Session from 'express-session'
 import Service from '../service/Base'
 import * as _ from 'lodash'
@@ -20,14 +20,14 @@ interface ROUTEING {
 }
 
 export default abstract class {
-    static setRouter(list: ROUTEING[]): Router{
+    static setRouter(list: ROUTEING[]): Router {
         const router = Router()
-        _.each(list, (item)=>{
+        _.each(list, (item) => {
 
             // this runs on init
 
             // this sets the callback for router.[method]
-            router[item.method](item.path, (req, res)=>{
+            router[item.method](item.path, (req, res) => {
 
                 // this block is the callback
                 // for the file upload - we remove any timeout
@@ -58,17 +58,17 @@ export default abstract class {
         this.init()
     }
 
-    protected init(){}
+    protected init() { }
 
     public async main(): Promise<any> {
-        try{
-            if(!await this.validate()){
-                return this.result(-1, { code: 401, message: 'Please login'})
+        try {
+            if (!await this.validate()) {
+                return this.result(-1, { code: 401, message: 'Please login' })
             }
 
             this.db = await DB.create()
             const result = await this.action()
-            if(result){
+            if (result) {
                 if (result.data && _.isNumber(result.data.code)) {
                     this.res.status(result.data.code).json(result.data)
                 } else {
@@ -77,16 +77,16 @@ export default abstract class {
                 }
             }
 
-        }catch(e){
+        } catch (e) {
             logger.error(e)
             this.res.json(this.result(-1, e))
         }
     }
 
-    private async validate(){
+    private async validate() {
         // check need login or not
-        if(this.needLogin){
-            if(!this.session.user){
+        if (this.needLogin) {
+            if (!this.session.user) {
                 this.res.sendStatus(401)
                 return false
             }
@@ -99,26 +99,26 @@ export default abstract class {
     abstract async action()
 
 
-    protected result(code, dataOrError, msg?){
+    protected result(code, dataOrError, msg?) {
         const opts: RESULT = {
             code,
             data: dataOrError,
-            error : dataOrError,
-            message : msg
+            error: dataOrError,
+            message: msg
         }
-        if(opts.code > 0){
+        if (opts.code > 0) {
             return {
-                code : opts.code,
-                data : opts.data,
-                message : opts.message || 'ok'
+                code: opts.code,
+                data: opts.data,
+                message: opts.message || 'ok'
             }
         }
-        else{
+        else {
             const err = opts.error
             return {
-                code : err['code'] ? -err['code'] : opts.code,
-                type : err.name || '',
-                error : err.message || err.toString()
+                code: err['code'] ? -err['code'] : opts.code,
+                type: err.name || '',
+                error: err.message || err.toString()
             }
         }
 
@@ -127,11 +127,11 @@ export default abstract class {
     /*
     * get service
     * */
-    protected buildService<T extends Service>(service: { new(...args): T }): T{
+    protected buildService<T extends Service>(service: { new(...args): T }): T {
         return new service(this.db, this.session)
     }
 
-    protected getParam(key?: string): any{
+    protected getParam(key?: string): any {
         const param = _.extend({}, this.req.query, this.req.body, this.req.params)
         return key ? _.get(param, key, '') : param
     }

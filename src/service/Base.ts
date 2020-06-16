@@ -14,13 +14,13 @@ export default class Base {
     this.init()
   }
 
-  protected init() {}
+  protected init() { }
 
   public getDBModel(name: string) {
     return this.db.getModel(name)
   }
 
-  protected getService<T extends Base>(service: { new (...args): T }): T {
+  protected getService<T extends Base>(service: { new(...args): T }): T {
     return new service(this.db, this.session)
   }
 

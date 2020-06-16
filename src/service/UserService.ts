@@ -533,7 +533,7 @@ export default class extends Base {
         return true
     }
 
-    
+
 
     public async checkEmail(param) {
         const db_user = this.getDBModel('User')
@@ -895,8 +895,6 @@ export default class extends Base {
             postCode
         } = param
 
-        console.log(param)
-
         if (!username)
             throw "USERNAME_INVALID"
 
@@ -945,17 +943,17 @@ export default class extends Base {
             userId
         } = param
 
-        // const checkUser = await DB_USER
-        //     .findById(userId)
+        const checkUser = await DB_USER
+            .findById(userId)
 
-        // if (!checkUser)
-        //     throw "USER_NOT_FOUND"
+        if (!checkUser)
+            throw "USER_NOT_FOUND"
 
         let query: any = [
             {
                 $match: {
                     active: true,
-                    _id: ObjectId("5ecff019f3eb381c0e0f32be")
+                    _id: ObjectId(userId)
                 }
             },
             {
@@ -1039,8 +1037,7 @@ export default class extends Base {
                     postCode: postCode
                 },
             },
-            type: "ADMIN",
-            // role: "ADMIN_FULL_PERMISSIONS"
+            type: "ADMIN"
         }
 
         await DB_USER
@@ -1057,7 +1054,7 @@ export default class extends Base {
 
     }
 
-    public async aboutMe(param){
+    public async aboutMe(param) {
 
         const DB_USER = this.getDBModel('User').getDBInstance();
 
@@ -1065,7 +1062,8 @@ export default class extends Base {
             about
         } = param
 
-        
+
 
     }
+
 }

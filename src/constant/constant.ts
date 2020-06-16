@@ -9,7 +9,7 @@ const create = (constant_list: string[]): any => {
   return map
 }
 
-export const PASSWORD_DEFAULT = 'besin@123';
+export const PASSWORD_DEFAULT = 'tai@abc123';
 
 export const SUGGESTION_TYPE = {
   NEW_MOTION: '1',

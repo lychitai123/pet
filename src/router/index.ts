@@ -1,7 +1,7 @@
-import {Request, Response, NextFunction, Router} from 'express'
-import {getEnv} from '../utility'
+import { Request, Response, NextFunction, Router } from 'express'
+import { getEnv } from '../utility'
 import db from '../db'
-import {utilCrypto} from '../utility'
+import { utilCrypto } from '../utility'
 import * as moment from 'moment'
 
 import user from './user'
@@ -23,7 +23,7 @@ export const middleware = async (req: Request, res: Response, next: NextFunction
         const json = JSON.parse(utilCrypto.decrypt(token.toString()))
         if (json.userId && json.expired && (json.expired - moment().unix() > 0)) {
             try {
-                const user = await DB.getModel('User').findOne({_id: json.userId})
+                const user = await DB.getModel('User').findOne({ _id: json.userId })
                 // TODO: find better way to not send the salt back to the front-end
 
                 if (user) {
@@ -39,7 +39,7 @@ export const middleware = async (req: Request, res: Response, next: NextFunction
         // check session
         const session = req['session']
         try {
-            const user = await DB.getModel('User').findOne({_id: session.userId})
+            const user = await DB.getModel('User').findOne({ _id: session.userId })
 
             if (user) {
                 req['session'].user = user
@@ -58,7 +58,7 @@ const router = Router()
 // }
 
 // Route CMS
-router.use('/cms/user', user)
+router.use('/user', user)
 
 router.use((req, res) => {
     return res.sendStatus(403)
