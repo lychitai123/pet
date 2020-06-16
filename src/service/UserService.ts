@@ -1163,4 +1163,16 @@ export default class extends Base {
         return "UPDATE_PROFILE_SUCCESSFULLY"
 
     }
+
+    public async aboutMe(param){
+
+        const DB_USER = this.getDBModel('User').getDBInstance();
+
+        const {
+            about
+        } = param
+
+        
+
+    }
 }

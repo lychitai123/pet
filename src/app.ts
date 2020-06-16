@@ -21,8 +21,7 @@ import './config'
 (async () => {
     const app = express()
     const DB = await db.create()
-    const permissions = await DB.getModel('Permission').find()
-    const prefix = '/api'
+    // const permissions = await DB.getModel('Permission').find()
 
     app.set('trust proxy', true)
     app.use(cors())
@@ -66,28 +65,20 @@ import './config'
     app.use(middleware)
     app.use(fileUpload())
 
+    app.use(express.static(path.resolve(__dirname, "views")));
+
     // setup access control for REST apis before the router middleware
-    AccessControl(prefix, app, permissions)
 
-    app.use(prefix, router);
-
-    app.use('/assets', express.static(path.join(__dirname, '../web/assets')));
-    // app.use('/static', express.static(path.join(__dirname, '../web/static')));
-
+    // AccessControl(prefix, app, permissions)
+    app.use("/api", router);
+    app.use('/assets', express.static(path.join(__dirname, 'views/assets')));
     app.use((req, res) => {
-        console.log(__dirname)
-        res.sendFile(path.join(__dirname, '../web/index.html'));
+        res.sendFile(path.join(__dirname, 'views/index.html'));
     });
-
-    console.log(path.join(__dirname, '../web/index.html'))
-
-    if (logger.rollbar()) {
-        app.use(logger.rollbar().errorHandler())
-    }
 
     const port = process.env.SERVER_PORT
     app.listen(port, () => {
         console.log(`start server at port ${port}`)
     })
 
-})()
+})();

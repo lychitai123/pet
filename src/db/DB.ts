@@ -43,7 +43,7 @@ export default class {
 
   public async start(): Promise<mongoose.ConnectionBase> {
     console.log('----------------------------------------');
-    const url = process.env.DB_URL || 'mongodb://localhost:27017/EBH';
+    const url = process.env.DB_URL || 'mongodb://localhost:27017/portfolio';
     console.log(url);
     const db = await mongoose.createConnection(url)
     mongoose.set('useNewUrlParser', true)
