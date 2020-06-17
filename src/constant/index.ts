@@ -1,3 +1,5 @@
-import * as constant from './constant'
+import * as constant from './constant';
+import * as type from './type';
+import * as error from './error'
 
-export { constant }
+export { constant, type, error }

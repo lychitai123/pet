@@ -2,12 +2,20 @@ import Base from '../Base';
 
 // Client
 
+// Login
+import login from './cms/login';
+
 // CMS
 import insert_profile from './cms/insert_profile';
 import view_profile from './cms/view_profile';
 import edit_profile from './cms/edit_profile';
 
 export default Base.setRouter([
+    {
+        path: "/login",
+        router: login,
+        method: "post"
+    },
     {
         path: "/cms/insert_profile",
         router: insert_profile,

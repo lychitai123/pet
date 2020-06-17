@@ -26,6 +26,12 @@ const restrictedFields = {
 
 export default class extends Base {
 
+    private db_user;
+
+    protected init() {
+        this.db_user = this.getDBModel('User');
+    }
+
     /**
      * On registration we also add them to the country community,
      * if it doesn't exist yet we will create it as well
@@ -872,6 +878,34 @@ export default class extends Base {
         }
     }
 
+    // Start for Login
+    public async getUserSaltByEmailOrCode(emailOrCode): Promise<String> {
+        const query = { 'email': { $eq: emailOrCode } };
+        const db_user = this.getDBModel('User');
+        const user = await db_user.db
+            .findOne({ email: emailOrCode });
+
+        if (!user) {
+            throw "USERNAME_OR_PASSWORD_IS_INCORRECT";
+        }
+        return user.salt;
+    }
+
+    public async findUserForLoginEmailOrCode(query): Promise<Document> {
+        const emailOrCode = query.email;
+        const db_user = this.getDBModel('User');
+        return await db_user.getDBInstance()
+            .findOne(
+                {
+                    email: emailOrCode,
+                    password: query.password,
+                }
+            )
+    }
+    // End for Login
+
+
+    // ======== CMS ========== //
     // Information Of Myself
     public async insertInformation(param) {
 
