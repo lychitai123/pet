@@ -8,6 +8,7 @@ import * as uuid from 'uuid'
 export default class {
   protected db: any
   public connection: mongoose.ConnectionBase
+  public mongodbDriver;
 
   constructor() {
     this.db = {}
@@ -20,14 +21,16 @@ export default class {
   public async start(): Promise<mongoose.ConnectionBase> {
     console.log('----------------------------------------');
     const url = process.env.DB_URL || 'mongodb://localhost:27017/portfolio';
-    console.log(url);
-    const db = await mongoose.createConnection(url)
-    mongoose.set('useNewUrlParser', true)
-    mongoose.set('useUnifiedTopology', true)
-    mongoose.set('useFindAndModify', false),
-      mongoose.set('useCreateIndex', true)
+    const options = {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useFindAndModify: false,
+      useCreateIndex: true
+    }
+    const db = await mongoose.createConnection(url, options)
 
     this.connection = db;
+    this.mongodbDriver = this.connection.db
 
     // Setup callback
     await this.connection.on('error', this.handleDBError);
