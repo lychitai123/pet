@@ -1,5 +1,5 @@
 import Base from './Base'
-import {User} from './schema/UserSchema'
+import { User } from './schema/UserSchema'
 
 /**
  * We never return password and salt, please note this is only provided
@@ -9,16 +9,16 @@ import {User} from './schema/UserSchema'
  * we can however provide a helper class/DAO but masking the base Mongoose is not good design
  */
 export default class extends Base {
-    protected getSchema(){
+    protected getSchema() {
         return User
     }
-    protected getName(){
+    protected getName() {
         return 'users'
     }
-    protected rejectFields(){
+    protected rejectFields() {
         return {
-            password : false,
-            salt : false
+            password: false,
+            salt: false
         }
     }
 }

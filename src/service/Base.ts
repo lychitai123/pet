@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
 import { constant } from '../constant';
+import { ObjectID } from 'bson'
 import * as mongoose from 'mongoose';
 const ObjectId = mongoose.Types.ObjectId
 
@@ -131,6 +132,34 @@ export default class Base {
       throw `_ID_NOT_FOUND, ${_id}`
 
     return view
+  }
+
+  public async deleteBase(param) {
+    let {
+      dbModel,
+      _id,
+      isDeleted
+    } = param;
+    let DB = this.getDBModel(`${dbModel}`).getDBInstance();
+
+    if (!_id || !ObjectID.isValid(_id))
+      throw "_ID_INVALID";
+    // Check_Id
+    const checkId = await DB
+      .findById(_id);
+    if (!checkId) throw "_ID_NOT_FOUND";
+
+    isDeleted === false ? await DB
+      .remove(
+        { _id: ObjectId(_id) }
+      )
+      : await DB
+        .updateOne(
+          { _id: ObjectId(_id) },
+          { $set: { isDeleted: true } }
+        )
+
+    return "DELETE_SUCCESSFULLY"
   }
 
 }

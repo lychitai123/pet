@@ -1,4 +1,5 @@
 import { Schema } from 'mongoose'
+import { boolean } from 'optimist'
 
 export const Region = {
     country: {
@@ -147,5 +148,9 @@ export const User = {
         type: String,
         required: true
     },
-    logins: [Date]
+    logins: [Date],
+    isDeleted: {
+        type: Boolean,
+        default: false
+    }
 }

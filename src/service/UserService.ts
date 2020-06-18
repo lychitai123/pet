@@ -912,7 +912,7 @@ export default class extends Base {
         if (!_id || !ObjectID.isValid(_id))
             throw "_ID_INVALID"
 
-        const view = await baseService.view({ dbModel: "User", _id });
+        const view = await this.view({ dbModel: "User", _id });
 
         return view
     }
@@ -964,12 +964,11 @@ export default class extends Base {
             type: "ADMIN"
         }
 
-        await baseService.create({ dbModel: "User", doc })
+        await this.create({ dbModel: "User", doc })
         return "Save_Successfully"
     }
 
     public async updateBase(param) {
-        const baseService = this.buildService(Base);
 
         let {
             _id,
@@ -1010,9 +1009,14 @@ export default class extends Base {
             type: "ADMIN"
         }
 
-        await baseService.update({ dbModel: "User", _id, doc })
+        await this.update({ dbModel: "User", _id, doc })
         return "Update_Successfully"
 
+    }
+
+    public async deleteBasee(param) {
+        let { _id, isDeleted } = param;
+        return await this.deleteBase({ dbModel: "User", _id, isDeleted: isDeleted ? true : false });
     }
 
     // ======== CMS ========== //

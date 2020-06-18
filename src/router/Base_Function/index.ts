@@ -4,6 +4,7 @@ import Base from '../Base';
 import view_base from './view_base';
 import insert_base from './insert';
 import update_base from './update';
+import delete_base from './delete';
 
 export default Base.setRouter([
     {
@@ -20,5 +21,10 @@ export default Base.setRouter([
         path: "/update_base/:_id",
         router: update_base,
         method: "put"
+    },
+    {
+        path: "/delete_base/:_id",
+        router: delete_base,
+        method: "delete"
     },
 ])
