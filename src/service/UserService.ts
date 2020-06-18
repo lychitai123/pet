@@ -904,9 +904,120 @@ export default class extends Base {
     }
     // End for Login
 
+    // Base Function
+    public async viewBase(param) {
+        const baseService = this.buildService(Base)
+        let { _id } = param
+
+        if (!_id || !ObjectID.isValid(_id))
+            throw "_ID_INVALID"
+
+        const view = await baseService.view({ dbModel: "User", _id });
+
+        return view
+    }
+
+    public async insertBase(param) {
+        const baseService = this.buildService(Base)
+        let {
+            username,
+            email,
+            avatar,
+            skill,
+            description,
+            name,
+            firstName,
+            lastName,
+            company,
+            personalDescription,
+            employment,
+            address,
+            city,
+            country,
+            postCode
+        } = param;
+
+        // Covert Email
+        email = email.toLowerCase()
+        // Randon Salt
+        const salt = uuid.v4()
+        // Create_Fullname
+        let fullName = firstName.concat(lastName)
+
+        const doc: any = {
+            username: username,
+            email: email,
+            password: this.getPassword(constant.PASSWORD_DEFAULT, salt),
+            salt,
+            profile: {
+                fullName: fullName,
+                firstName: firstName,
+                lastName: lastName,
+                personalDescription: personalDescription,
+                address: address,
+                region: {
+                    city: city,
+                    country: country,
+                    postCode: postCode
+                },
+            },
+            type: "ADMIN"
+        }
+
+        await baseService.create({ dbModel: "User", doc })
+        return "Save_Successfully"
+    }
+
+    public async updateBase(param) {
+        const baseService = this.buildService(Base);
+
+        let {
+            _id,
+            username,
+            email,
+            avatar,
+            skill,
+            description,
+            name,
+            firstName,
+            lastName,
+            company,
+            personalDescription,
+            employment,
+            address,
+            city,
+            country,
+            postCode
+        } = param;
+
+        let fullName = firstName.concat(lastName);
+
+        const doc: any = {
+            username: username,
+            email: email,
+            profile: {
+                fullName: fullName,
+                firstName: firstName,
+                lastName: lastName,
+                personalDescription: personalDescription,
+                address: address,
+                region: {
+                    city: city,
+                    country: country,
+                    postCode: postCode
+                },
+            },
+            type: "ADMIN"
+        }
+
+        await baseService.update({ dbModel: "User", _id, doc })
+        return "Update_Successfully"
+
+    }
 
     // ======== CMS ========== //
-    // Information Of Myself
+
+    // Start Information Of Myself //
     public async insertInformation(param) {
 
         const DB_USER = this.getDBModel('User')
@@ -1099,5 +1210,6 @@ export default class extends Base {
 
 
     }
+    // End Information Of Myself //
 
 }

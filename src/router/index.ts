@@ -1,10 +1,13 @@
-import { Request, Response, NextFunction, Router } from 'express'
-import { getEnv } from '../utility'
-import db from '../db'
-import { utilCrypto } from '../utility'
-import * as moment from 'moment'
+import { Request, Response, NextFunction, Router } from 'express';
+import { getEnv } from '../utility';
+import db from '../db';
+import { utilCrypto } from '../utility';
+import * as moment from 'moment';
 
-import user from './user'
+// Routes to Index
+import baseFunction from './Base_Function/index'
+import user from './user';
+
 
 /**
  * Every request intercepts the token and sets the session user from the userId again
@@ -56,6 +59,9 @@ const router = Router()
 // if (getEnv() === 'dev') {
 //     router.use('/test', test)
 // }
+
+// Route Base_Function
+router.use('/base', baseFunction)
 
 // Route CMS
 router.use('/user', user)

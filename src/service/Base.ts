@@ -1,5 +1,7 @@
-import * as _ from 'lodash'
-import { constant } from '../constant'
+import * as _ from 'lodash';
+import { constant } from '../constant';
+import * as mongoose from 'mongoose';
+const ObjectId = mongoose.Types.ObjectId
 
 export default class Base {
   protected db
@@ -22,6 +24,10 @@ export default class Base {
 
   protected getService<T extends Base>(service: { new(...args): T }): T {
     return new service(this.db, this.session)
+  }
+
+  protected buildService<T extends Base>(service: { new(...args): T }): T {
+    return new service(this.db, this.session);
   }
 
   protected async markLastSeenComment(commentable, createdBy, db_commentable) {
@@ -75,4 +81,56 @@ export default class Base {
   protected isAdmin() {
     return this.currentUser.role === constant.USER_ROLE.ADMIN
   }
+
+  /**
+   *  Base Function
+   */
+  public async create(param): Promise<Document> {
+
+    let {
+      dbModel,
+      doc
+    } = param;
+    let DB = await this.getDBModel(`${dbModel}`);
+
+    delete doc.dbModel
+
+    const saveDoc = await DB.save(doc)
+
+    return saveDoc;
+  }
+
+  public async update(param): Promise<Document> {
+    let {
+      dbModel
+      , _id
+      , doc
+    } = param;
+    let DB = await this.getDBModel(`${dbModel}`).getDBInstance();
+
+    const query = { _id: ObjectId(_id) }
+    const update = { $set: { ...doc } }
+
+    const updateDoc = await DB
+      .updateOne(query, update)
+
+    return updateDoc
+  }
+
+  public async view(param) {
+    let {
+      dbModel,
+      _id
+    } = param;
+    let DB = this.getDBModel(`${dbModel}`).getDBInstance();
+
+    const view = await DB
+      .findById(_id)
+
+    if (!view)
+      throw `_ID_NOT_FOUND, ${_id}`
+
+    return view
+  }
+
 }
