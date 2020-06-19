@@ -1,10 +1,7 @@
 import Base from '../Base';
 
-// Client
-
 // Login
 import login from './cms/login';
-
 // CMS
 import insert_profile from './cms/insert_profile';
 import view_profile from './cms/view_profile';
