@@ -17,6 +17,15 @@ export { utilCrypto, sso, user, validate, permissions, mail, logger }
 
 export const getEnv = () => process.env.NODE_ENV
 
+export const min = (a, b) => {
+  return a > b ? b : a
+}
+export const isSubArray = (sub, master) => {
+  // console.log('isSubArr', sub, master)
+  if (!Array.isArray(sub)) return false
+  if (sub.length === 0) return true
+  return sub.every(elem => master.indexOf(elem) > -1);
+}
 export const uncompressPubKey = (key: any) => {
   if (!key.compressed) {
     throw new Error('Public key is not compressed.')
@@ -27,7 +36,6 @@ export const uncompressPubKey = (key: any) => {
   const ybuf = y.toBuffer({ size: 32 })
   return Buffer.concat([Buffer.from([0x04]), xbuf, ybuf])
 }
-
 export const getPemPubKey = (key: any) => {
   if (!key.compressed) {
     throw new Error('Public key is not compressed.')
@@ -42,7 +50,6 @@ export const getPemPubKey = (key: any) => {
   }
   return jwkToPem(jwk)
 }
-
 export const getDidPublicKey = async (did: string) => {
   const headers = {
     'Content-Type': 'application/json',
@@ -76,4 +83,108 @@ export const getDidPublicKey = async (did: string) => {
   } catch (err) {
     logger.error(err)
   }
+}
+export const slug = (strSlug) => {
+  if (strSlug == undefined || strSlug == '') {
+    return '';
+  }
+  else {
+    let slug = strSlug.toLowerCase();
+
+    //Chuyển Ký Tự Có Dấu Thành Không Dấu
+    slug = slug.replace(/á|à|ả|ã|ạ|ă|â|ắ|ằ|ẳ|ẵ|ặ|ấ|ầ|ẩ|ẫ|ậ/gi, 'a');
+    slug = slug.replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/gi, 'e');
+    slug = slug.replace(/í|ỉ|ì|ĩ|ị/gi, 'i');
+    slug = slug.replace(/ó|ỏ|ò|õ|ọ|ơ|ô|ớ|ở|ờ|ỡ|ợ|ố|ổ|ồ|ỗ|ộ/gi, 'o');
+    slug = slug.replace(/ú|ủ|ù|ũ|ụ|ư|ừ|ử|ừ|ữ|ự/gi, 'u');
+    slug = slug.replace(/ý|ỷ|ỳ|ỹ|ỵ/gi, 'y');
+    slug = slug.replace(/đ/gi, 'd');
+
+    //Xóa Ký Tự Đặc Biệt
+    slug = slug.replace(/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\/|\?|\<|\>|\,|\.|\;|\"|\'|\[|\]|\{|\}|\:|\_|\\/gi, '');
+
+    //Đổi Khoảng Trằng Thành Khoảng Trắng
+    slug = slug.replace(/ /gi, '');
+
+    //Phòng Trường Hợp Khách Hàng Nhập Nhiều Ký Tự Khoảng Trống
+    slug = slug.replace(/\-{2,}/gi, '');
+
+    //Xóa Các Ký Tự Gạch Ngang Ở Đầu Và Cuối
+    slug = '@' + slug + '@'
+    slug = slug.replace(/\@\-|\-\@|\@/gi, '');
+
+    return slug;
+  }
+}
+export const slugVer2 = (strSlug) => {
+  if (strSlug == undefined || strSlug == '') {
+    return '';
+  }
+  else {
+    let slug = strSlug.toLowerCase();
+
+    //Chuyển Ký Tự Có Dấu Thành Không Dấu
+    slug = slug.replace(/á|à|ả|ã|ạ|ă|â|ắ|ằ|ẳ|ẵ|ặ|ấ|ầ|ẩ|ẫ|ậ/gi, 'a');
+    slug = slug.replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/gi, 'e');
+    slug = slug.replace(/í|ỉ|ì|ĩ|ị/gi, 'i');
+    slug = slug.replace(/ó|ỏ|ò|õ|ọ|ơ|ô|ớ|ở|ờ|ỡ|ợ|ố|ổ|ồ|ỗ|ộ/gi, 'o');
+    slug = slug.replace(/ú|ủ|ù|ũ|ụ|ư|ừ|ử|ừ|ữ|ự/gi, 'u');
+    slug = slug.replace(/ý|ỷ|ỳ|ỹ|ỵ/gi, 'y');
+    slug = slug.replace(/đ/gi, 'd');
+
+    //Xóa Ký Tự Đặc Biệt
+    slug = slug.replace(/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\/|\?|\<|\>|\,|\.|\;|\"|\'|\[|\]|\{|\}|\:|\_|\\/gi, '');
+
+    //Đổi Khoảng Trằng Thành -
+    slug = slug.replace(/ /gi, '-');
+
+    //Phòng Trường Hợp Khách Hàng Nhập Nhiều Ký Tự Khoảng Trống
+    slug = slug.replace(/\-{2,}/gi, '-');
+
+    //Xóa Các Ký Tự Gạch Ngang Ở Đầu Và Cuối
+    slug = '@' + slug + '@'
+    slug = slug.replace(/\@\-|\-\@|\@/gi, '');
+
+    return slug;
+  }
+}
+export const slugVer3 = (strSlug) => {
+  if (strSlug == undefined || strSlug == '') {
+    return '';
+  }
+  else {
+    let slug = strSlug.toLowerCase();
+
+    //Chuyển Ký Tự Có Dấu Thành Không Dấu
+    slug = slug.replace(/á|à|ả|ã|ạ|ă|â|ắ|ằ|ẳ|ẵ|ặ|ấ|ầ|ẩ|ẫ|ậ/gi, 'a');
+    slug = slug.replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/gi, 'e');
+    slug = slug.replace(/í|ỉ|ì|ĩ|ị/gi, 'i');
+    slug = slug.replace(/ó|ỏ|ò|õ|ọ|ơ|ô|ớ|ở|ờ|ỡ|ợ|ố|ổ|ồ|ỗ|ộ/gi, 'o');
+    slug = slug.replace(/ú|ủ|ù|ũ|ụ|ư|ừ|ử|ừ|ữ|ự/gi, 'u');
+    slug = slug.replace(/ý|ỷ|ỳ|ỹ|ỵ/gi, 'y');
+    slug = slug.replace(/đ/gi, 'd');
+
+    //Xóa Ký Tự Đặc Biệt
+    slug = slug.replace(/\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\/|\?|\<|\>|\,|\.|\;|\"|\'|\[|\]|\{|\}|\:|\_|\\/gi, '');
+
+    // //Đổi Khoảng Trằng Thành Khoảng Trắng
+    // slug = slug.replace(/ /gi, '');
+
+    //Phòng Trường Hợp Khách Hàng Nhập Nhiều Ký Tự Khoảng Trống
+    slug = slug.replace(/\-{2,}/gi, '');
+
+    //Xóa Các Ký Tự Gạch Ngang Ở Đầu Và Cuối
+    slug = '@' + slug + '@'
+    slug = slug.replace(/\@\-|\-\@|\@/gi, '');
+
+    return slug.replace(/[^a-zA-Z0-9 ]/g, " ");
+  }
+}
+export const getRandomSalt = (length = 8): String => {
+  let salt = "";
+  const char_list = "QWERTYUIOPASDFGHJKLZXCVBNM0123456789";
+  for (let i = 0; i < length; i++)
+    salt += char_list.charAt(Math.floor(Math.random() * char_list.length));
+
+  return salt;
 }
