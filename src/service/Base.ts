@@ -161,6 +161,6 @@ export default class Base {
 
     return "DELETE_SUCCESSFULLY"
   }
-  
+
 
 }
