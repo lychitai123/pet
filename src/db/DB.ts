@@ -1,6 +1,8 @@
 import * as mongoose from 'mongoose';
 
-import User from './User'
+// Schemna
+import User from './User';
+import UserManage from './UserManagement'
 
 import { utilCrypto } from '../utility'
 import * as uuid from 'uuid'
@@ -79,7 +81,8 @@ export default class {
   }
 
   private initDB(db) {
-    this.db.User = new User(db)
+    this.db.User = new User(db);
+    this.db.UserManage = new UserManage(db);
   }
 
   public getModel(name: string) {

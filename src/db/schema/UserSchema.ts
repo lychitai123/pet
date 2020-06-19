@@ -58,9 +58,12 @@ export const Profile = {
     address: {
         type: String,
         default: ""
+    },
+    parentName: {
+        type: String,
+        default: ""
     }
 }
-
 export const WorkProject = {
     startTime: {
         type: Date,
@@ -79,9 +82,8 @@ export const WorkProject = {
         default: ""
     }
 }
-
 export const WorkAbout = {
-    company: {
+    company: {  // Company Or School
         type: String,
         default: ""
     },
@@ -105,7 +107,6 @@ export const WorkAbout = {
         default: ""
     }
 }
-
 export const User = {
     username: {
         type: String,
