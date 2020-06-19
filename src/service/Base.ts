@@ -94,10 +94,7 @@ export default class Base {
     } = param;
     let DB = await this.getDBModel(`${dbModel}`);
 
-    console.log(doc);
-
     const saveDoc = await DB.save(doc)
-
     return saveDoc;
   }
 
