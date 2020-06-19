@@ -94,7 +94,7 @@ export default class Base {
     } = param;
     let DB = await this.getDBModel(`${dbModel}`);
 
-    delete doc.dbModel
+    console.log(doc);
 
     const saveDoc = await DB.save(doc)
 
@@ -161,5 +161,6 @@ export default class Base {
 
     return "DELETE_SUCCESSFULLY"
   }
+  
 
 }

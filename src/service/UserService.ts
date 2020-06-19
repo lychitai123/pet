@@ -918,19 +918,13 @@ export default class extends Base {
     }
 
     public async insertBase(param) {
-        const baseService = this.buildService(Base)
+
         let {
             username,
             email,
-            avatar,
-            skill,
-            description,
-            name,
             firstName,
             lastName,
-            company,
             personalDescription,
-            employment,
             address,
             city,
             country,
@@ -944,7 +938,7 @@ export default class extends Base {
         // Create_Fullname
         let fullName = firstName.concat(lastName)
 
-        const doc: any = {
+        const doc = {
             username: username,
             email: email,
             password: this.getPassword(constant.PASSWORD_DEFAULT, salt),
@@ -956,9 +950,9 @@ export default class extends Base {
                 personalDescription: personalDescription,
                 address: address,
                 region: {
-                    city: city,
-                    country: country,
-                    postCode: postCode
+                    city,
+                    country,
+                    postCode
                 },
             },
             type: "ADMIN"
