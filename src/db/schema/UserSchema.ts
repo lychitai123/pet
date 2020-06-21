@@ -1,5 +1,4 @@
 import { Schema } from 'mongoose'
-import { boolean } from 'optimist'
 
 export const Region = {
     country: {
@@ -19,7 +18,6 @@ export const Region = {
         default: ""
     },
 }
-
 export const Profile = {
     firstName: {
         type: String,

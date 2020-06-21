@@ -4,10 +4,10 @@ import * as path from 'path';
 const env = process.env.NODE_ENV || 'dev';
 
 try {
-    const configFilePath = path.resolve('', process.cwd() + `/env/${env}.env`);
-    console.log(configFilePath);
-    const config = dotenv.config({ path: configFilePath });
-    console.log(config.parsed)
+  const configFilePath = path.resolve('', process.cwd() + `/env/${env}.env`);
+  console.log(configFilePath);
+  const config = dotenv.config({ path: configFilePath });
+  console.log(config.parsed);
 } catch (e) {
-    console.error(e);
+  console.error(e);
 }

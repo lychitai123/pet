@@ -1,6 +1,5 @@
 import { Schema } from 'mongoose';
 
-
 export const UserManage = {
     userId: {
         type: Schema.Types.ObjectId,
@@ -26,4 +25,5 @@ export const UserManage = {
         type: String,
         default: ""
     }
+    
 }
