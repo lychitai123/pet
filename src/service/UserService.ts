@@ -1341,6 +1341,7 @@ export default class extends Base {
 
    public async updateUser(param) {
       let {
+         userId,
          username,
          email,
          avatar,
@@ -1374,6 +1375,14 @@ export default class extends Base {
 
       workAbout.map((e) => ObjectId(e));
 
+      // Check UserId
+      const checkUser = await this.db_user
+         .getDBInstance()
+         .findById(userId)
+
+      if (!checkUser)
+         throw "User_Not_Found"
+
       const doc: any = {
          username: username,
          email: email,
@@ -1394,5 +1403,13 @@ export default class extends Base {
          type: "ADMIN",
          workAbout: ObjectId(workAbout),
       };
+
+      await this.db_user.getDBInstance
+         .updateOne(
+            { _id: ObjectId(userId) },
+            { $set: { ...doc } }
+         )
+
+      return 'Update_Successfully'
    }
 }
