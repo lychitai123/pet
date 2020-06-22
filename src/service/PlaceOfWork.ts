@@ -1,4 +1,5 @@
 import Base from './Base';
+
 // Library
 import * as mongoose from 'mongoose';
 import { ObjectID } from 'bson';

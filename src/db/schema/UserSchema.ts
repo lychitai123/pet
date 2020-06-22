@@ -129,7 +129,10 @@ export const User = {
    },
    profile: Profile,
    defaultLanguage: String,
-   workAbout: WorkAbout,
+   workAbout: {
+      type: Schema.Types.ObjectId,
+      ref: 'PlaceOfWork',
+   },
    // resetToken, ensure this is never returned
    resetToken: String,
    role: {

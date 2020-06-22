@@ -50,6 +50,10 @@ export const Profile = {
       type: String,
       default: '',
    },
+   status: {
+      type: String,
+      default: '',
+   },
 };
 
 export const PlaceOfWork = {
