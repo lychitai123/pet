@@ -1,11 +1,11 @@
 import Base from './Base';
-import { UserManage } from './schema/UserManagement.Schema';
+import { PlaceOfWork } from './schema/PlaceOfWork.Schema';
 
 export default class extends Base {
    protected getSchema() {
-      return UserManage;
+      return PlaceOfWork;
    }
    protected getName() {
-      return 'UserManage';
+      return 'PlaceOfWork';
    }
 }
