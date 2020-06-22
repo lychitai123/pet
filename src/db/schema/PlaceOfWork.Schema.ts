@@ -56,7 +56,7 @@ export const Profile = {
    },
 };
 
-export const PlaceOfWork = {
+export const WorkAbout = {
    name: {
       type: String,
       default: '',

@@ -3,7 +3,7 @@ import * as mongoose from 'mongoose';
 // Schema
 import User from './User';
 import UserManage from './UserManagement';
-import PlaceOfWork from './PlaceOfWork';
+import WorkAbout from './PlaceOfWork';
 
 import { utilCrypto } from '../utility';
 import * as uuid from 'uuid';
@@ -23,7 +23,7 @@ export default class {
 
    public async start(): Promise<mongoose.ConnectionBase> {
       console.log('----------------------------------------');
-      const url = process.env.DB_URL || 'mongodb://localhost:27017/portfolio';
+      const url = process.env.DB_URL || 'mongodb://localhost:27017/camera';
       const options = {
          useNewUrlParser: true,
          useUnifiedTopology: true,
@@ -84,7 +84,7 @@ export default class {
    private initDB(db) {
       this.db.User = new User(db);
       this.db.UserManage = new UserManage(db);
-      this.db.PlaceOfWork = new PlaceOfWork(db);
+      this.db.WorkAbout = new WorkAbout(db);
    }
 
    public getModel(name: string) {

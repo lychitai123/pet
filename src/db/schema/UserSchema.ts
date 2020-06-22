@@ -18,6 +18,7 @@ export const Region = {
       default: '',
    },
 };
+
 export const Profile = {
    firstName: {
       type: String,
@@ -44,12 +45,7 @@ export const Profile = {
       type: Date,
       default: '',
    },
-   region: Region,
    phone: {
-      type: String,
-      default: '',
-   },
-   personalDescription: {
       type: String,
       default: '',
    },
@@ -57,11 +53,17 @@ export const Profile = {
       type: String,
       default: '',
    },
-   parentName: {
+   parentsName: {
       type: String,
       default: '',
    },
+   email: {
+      type: String,
+      default: '',
+      required: true,
+   },
 };
+
 export const WorkProject = {
    startTime: {
       type: Date,
@@ -80,32 +82,34 @@ export const WorkProject = {
       default: '',
    },
 };
-export const WorkAbout = {
-   company: {
-      // Company Or School
-      type: String,
-      default: '',
-   },
-   status: {
-      type: String,
-      default: '',
-   },
-   employment: {
-      type: String,
-      default: '',
-   },
-   skill: [
-      {
-         type: String,
-         default: '',
-      },
-   ],
-   project: [WorkProject],
-   notes: {
-      type: String,
-      default: '',
-   },
-};
+
+// export const WorkAbout = {
+//    company: {
+//       // Company Or School
+//       type: String,
+//       default: '',
+//    },
+//    status: {
+//       type: String,
+//       default: '',
+//    },
+//    employment: {
+//       type: String,
+//       default: '',
+//    },
+//    skill: [
+//       {
+//          type: String,
+//          default: '',
+//       },
+//    ],
+//    project: [WorkProject],
+//    notes: {
+//       type: String,
+//       default: '',
+//    },
+// };
+
 export const User = {
    username: {
       type: String,
@@ -122,30 +126,28 @@ export const User = {
       required: true,
    },
    // let's keep this on the root object
-   email: {
+   profile: Profile,
+   defaultLanguage: {
       type: String,
       default: '',
-      required: true,
    },
-   profile: Profile,
-   defaultLanguage: String,
-   workAbout: {
-      type: Schema.Types.ObjectId,
-      ref: 'PlaceOfWork',
-   },
+   workAbout: [
+      {
+         type: Schema.Types.ObjectId,
+         ref: 'PlaceOfWork',
+         index: true,
+      },
+   ],
    // resetToken, ensure this is never returned
    resetToken: String,
    role: {
       type: Schema.Types.ObjectId,
       ref: 'Role',
+      index: true,
    },
    notes: {
       type: String,
       default: '',
-   },
-   active: {
-      type: Boolean,
-      default: true,
    },
    type: {
       type: String,
@@ -156,4 +158,5 @@ export const User = {
       type: Boolean,
       default: false,
    },
+   region: Region,
 };

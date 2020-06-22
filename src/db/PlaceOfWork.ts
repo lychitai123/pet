@@ -1,9 +1,9 @@
 import Base from './Base';
-import { PlaceOfWork } from './schema/PlaceOfWork.Schema';
+import { WorkAbout } from './schema/PlaceOfWork.Schema';
 
 export default class extends Base {
    protected getSchema() {
-      return PlaceOfWork;
+      return WorkAbout;
    }
    protected getName() {
       return 'PlaceOfWork';
