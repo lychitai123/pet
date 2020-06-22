@@ -1297,7 +1297,7 @@ export default class extends Base {
          workAbout: ObjectId(workAbout),
       };
 
-      // await Db_User.save(doc);
+      await this.db_user.save(doc);
       return "Save_Successfully";
    }
 
@@ -1337,5 +1337,62 @@ export default class extends Base {
          .append(paginateAggregate([], page, limit));
 
       return result[0];
+   }
+
+   public async updateUser(param) {
+      let {
+         username,
+         email,
+         avatar,
+         skill,
+         description,
+         name,
+         firstName,
+         lastName,
+         company,
+         personalDescription,
+         employment,
+         address,
+         city,
+         country,
+         postCode,
+         workAbout,
+      } = param;
+
+      if (!username) throw "USERNAME_INVALID";
+      if (!email) throw "EMAIL_INVALID";
+
+      // Lower Email
+      email = email.toLowerCase();
+      // Random Salt
+      const salt = uuid.v4();
+      // Create_FullName
+      let fullName = firstName.concat(lastName);
+
+      if (!workAbout || !ObjectID.isValid(workAbout))
+         throw "WorkAbout_ID_Invalid";
+
+      workAbout.map((e) => ObjectId(e));
+
+      const doc: any = {
+         username: username,
+         email: email,
+         password: this.getPassword(constant.PASSWORD_DEFAULT, salt),
+         salt,
+         profile: {
+            fullName: fullName,
+            firstName: firstName,
+            lastName: lastName,
+            personalDescription: personalDescription,
+            address: address,
+            region: {
+               city: city,
+               country: country,
+               postCode: postCode,
+            },
+         },
+         type: "ADMIN",
+         workAbout: ObjectId(workAbout),
+      };
    }
 }
