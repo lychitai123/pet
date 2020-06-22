@@ -10,7 +10,7 @@ export default class extends Base {
    private db_placeOfWork;
    protected init() {
       this.db_user = this.getDBModel('User');
-      this.db_placeOfWork = this.getDBModel('PlaceOfWork');
+      this.db_placeOfWork = this.getDBModel('WorkAbout');
    }
 
    public async savePlace(param) {

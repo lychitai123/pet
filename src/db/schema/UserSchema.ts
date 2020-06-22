@@ -57,11 +57,6 @@ export const Profile = {
       type: String,
       default: '',
    },
-   email: {
-      type: String,
-      default: '',
-      required: true,
-   },
 };
 
 export const WorkProject = {
@@ -83,39 +78,11 @@ export const WorkProject = {
    },
 };
 
-// export const WorkAbout = {
-//    company: {
-//       // Company Or School
-//       type: String,
-//       default: '',
-//    },
-//    status: {
-//       type: String,
-//       default: '',
-//    },
-//    employment: {
-//       type: String,
-//       default: '',
-//    },
-//    skill: [
-//       {
-//          type: String,
-//          default: '',
-//       },
-//    ],
-//    project: [WorkProject],
-//    notes: {
-//       type: String,
-//       default: '',
-//    },
-// };
-
 export const User = {
    username: {
       type: String,
       required: true,
       index: true,
-      unique: true,
    },
    password: {
       type: String,
@@ -123,6 +90,11 @@ export const User = {
    },
    salt: {
       type: String,
+      required: true,
+   },
+   email: {
+      type: String,
+      default: '',
       required: true,
    },
    // let's keep this on the root object

@@ -1075,17 +1075,19 @@ export default class extends Base {
          city,
          country,
          postCode,
+         workAbout,
+         type,
       } = param;
 
       if (!username) throw 'USERNAME_INVALID';
-
       if (!email) throw 'EMAIL_INVALID';
 
+      const work = workAbout.map((e: any) => ObjectId(e));
       // Covert Email
       email = email.toLowerCase();
-      // Randon Salt
+      // Random Salt
       const salt = uuid.v4();
-      // Create_Fullname
+      // Create_FullName
       let fullName = firstName.concat(lastName);
 
       const doc: any = {
@@ -1105,11 +1107,17 @@ export default class extends Base {
                postCode: postCode,
             },
          },
-         type: 'ADMIN',
+         type: type,
       };
 
-      await DB_USER.save(doc);
-
+      const rs = await DB_USER.save(doc);
+      await this.db_user
+         .getDBInstance()
+         .updateOne(
+            { _id: ObjectId(rs._id) },
+            { $set: { workAbout: work } },
+            { upsert: true }
+         );
       return 'SAVE_SUCCESSFULLY';
    }
 
@@ -1228,12 +1236,65 @@ export default class extends Base {
    // End Information Of Myself //
 
    // Ricoh Requirement
+   public async inputSchool(param) {
+      const Db_User = this.db_user;
 
-   // public async inputSchool(param): Promise<Document> {
-   //   let {
+      let {
+         username,
+         email,
+         avatar,
+         skill,
+         description,
+         name,
+         firstName,
+         lastName,
+         company,
+         personalDescription,
+         employment,
+         address,
+         city,
+         country,
+         postCode,
+         workAbout,
+      } = param;
 
-   //   } = param;
+      if (!username) throw 'USERNAME_INVALID';
+      if (!email) throw 'EMAIL_INVALID';
 
-   //   return 'Done';
-   // }
+      // Lower Email
+      email = email.toLowerCase();
+      // Random Salt
+      const salt = uuid.v4();
+      // Create_FullName
+      let fullName = firstName.concat(lastName);
+
+      if (!workAbout || !ObjectID.isValid(workAbout))
+         throw 'WorkAbout_ID_Invalid';
+
+      workAbout.map((e) => ObjectId(e));
+
+      const doc: any = {
+         username: username,
+         email: email,
+         password: this.getPassword(constant.PASSWORD_DEFAULT, salt),
+         salt,
+         profile: {
+            fullName: fullName,
+            firstName: firstName,
+            lastName: lastName,
+            personalDescription: personalDescription,
+            address: address,
+            region: {
+               city: city,
+               country: country,
+               postCode: postCode,
+            },
+         },
+         type: 'ADMIN',
+         workAbout: ObjectId(workAbout),
+      };
+
+      // await Db_User.save(doc);
+      return 'Save_Successfully';
+   }
 }

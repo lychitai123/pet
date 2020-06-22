@@ -6,6 +6,6 @@ export default class extends Base {
       return WorkAbout;
    }
    protected getName() {
-      return 'PlaceOfWork';
+      return 'WorkAbout';
    }
 }
