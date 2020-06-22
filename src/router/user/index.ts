@@ -7,6 +7,9 @@ import insert_profile from './cms/insert_profile';
 import view_profile from './cms/view_profile';
 import edit_profile from './cms/edit_profile';
 
+// Camera Ricoh
+import getListUserRC from './cms/camera/getListUser'
+
 export default Base.setRouter([
     {
         path: "/login",
@@ -27,5 +30,12 @@ export default Base.setRouter([
         path: "/cms/edit_profile/:userId",
         router: edit_profile,
         method: "put"
+    },
+
+    // ======= Ricoh ========= //
+    {
+        path: "/ricoh/get_list_user",
+        router: getListUserRC,
+        method: "get"
     }
 ])

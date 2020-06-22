@@ -1,9 +1,13 @@
-import Base from './Base';
-import { Document } from 'mongoose';
-import * as _ from 'lodash';
-import { constant } from '../constant';
-import { geo } from '../utility/geo';
-import * as uuid from 'uuid';
+import Base from "./Base";
+// Library
+import { Document } from "mongoose";
+import * as _ from "lodash";
+import * as uuid from "uuid";
+// File
+import { constant } from "../constant";
+import { geo } from "../utility/geo";
+import { paginateAggregate } from '../helpers/paginate'
+
 import {
    validate,
    utilCrypto,
@@ -12,26 +16,27 @@ import {
    getDidPublicKey,
    logger,
    user,
-} from '../utility';
-import * as jwt from 'jsonwebtoken';
-import { ObjectID } from 'bson';
+} from "../utility";
+import * as jwt from "jsonwebtoken";
+import { ObjectID } from "bson";
 
-import * as mongoose from 'mongoose';
+import * as mongoose from "mongoose";
+import { trim } from "lodash";
 const ObjectId = mongoose.Types.ObjectId;
 
 const selectFields =
-   '-logins -salt -password -elaBudget -elaOwed -votePower -resetToken';
-const strictSelectFields = selectFields + ' -email -profile.walletAddress';
+   "-logins -salt -password -elaBudget -elaOwed -votePower -resetToken";
+const strictSelectFields = selectFields + " -email -profile.walletAddress";
 
 const restrictedFields = {
-   update: ['_id', 'username', 'role', 'profile', 'salt'],
+   update: ["_id", "username", "role", "profile", "salt"],
 };
 
 export default class extends Base {
    private db_user;
 
    protected init() {
-      this.db_user = this.getDBModel('User');
+      this.db_user = this.getDBModel("User");
    }
 
    /**
@@ -42,7 +47,7 @@ export default class extends Base {
     * @returns {Promise<"mongoose".Document>}
     */
    public async registerNewUser(param): Promise<Document> {
-      const db_user = this.getDBModel('User');
+      const db_user = this.getDBModel("User");
 
       let {
          username,
@@ -66,10 +71,10 @@ export default class extends Base {
 
       // check username and email unique
       if (await db_user.findOne({ username })) {
-         throw 'USERNAME_HAS_EXISTED';
+         throw "USERNAME_HAS_EXISTED";
       }
       if (await db_user.findOne({ email: email })) {
-         throw 'EMAIL_HAS_EXISTED';
+         throw "EMAIL_HAS_EXISTED";
       }
 
       const salt = uuid.v4();
@@ -97,7 +102,7 @@ export default class extends Base {
 
    // record user login date
    public async recordLogin(param) {
-      const db_user = this.getDBModel('User');
+      const db_user = this.getDBModel("User");
       await db_user.update(
          { _id: param.userId },
          { $push: { logins: new Date() } }
@@ -108,13 +113,13 @@ export default class extends Base {
       const isEmail = validate.email(username);
       username = username.toLowerCase();
 
-      const query = { [isEmail ? 'email' : 'username']: username };
+      const query = { [isEmail ? "email" : "username"]: username };
 
-      const db_user = this.getDBModel('User');
+      const db_user = this.getDBModel("User");
       const user = await db_user.db.findOne(query);
 
       if (!user) {
-         throw 'invalid username or email';
+         throw "invalid username or email";
       }
       return user.salt;
    }
@@ -126,14 +131,14 @@ export default class extends Base {
     */
    public async show(param) {
       const { userId } = param;
-      const db_user = this.getDBModel('User');
-      const userRole = _.get(this.currentUser, 'role');
+      const db_user = this.getDBModel("User");
+      const userRole = _.get(this.currentUser, "role");
       const isUserAdmin = permissions.isAdmin(userRole);
-      const isSelf = _.get(this.currentUser, '_id') === userId;
+      const isSelf = _.get(this.currentUser, "_id") === userId;
       let fields = isUserAdmin || isSelf ? selectFields : strictSelectFields;
 
       if (param.admin && !isUserAdmin && !isSelf) {
-         throw 'Access Denied';
+         throw "Access Denied";
       }
 
       const user = await db_user
@@ -143,7 +148,7 @@ export default class extends Base {
             $or: [{ banned: { $exists: false } }, { banned: false }],
          })
          .select(fields)
-         .populate('circles');
+         .populate("circles");
 
       if (!user) {
          throw `userId: ${userId} not found`;
@@ -153,7 +158,7 @@ export default class extends Base {
          for (let comment of user.comments) {
             for (let thread of comment) {
                await db_user.getDBInstance().populate(thread, {
-                  path: 'createdBy',
+                  path: "createdBy",
                   select: fields,
                });
             }
@@ -161,7 +166,7 @@ export default class extends Base {
 
          for (let subscriber of user.subscribers) {
             await db_user.getDBInstance().populate(subscriber, {
-               path: 'user',
+               path: "user",
                select: fields,
             });
          }
@@ -175,36 +180,36 @@ export default class extends Base {
 
    public async updateRole(param) {
       const { userId, role } = param;
-      const db_user = this.getDBModel('User');
-      const userRole = _.get(this.currentUser, 'role');
+      const db_user = this.getDBModel("User");
+      const userRole = _.get(this.currentUser, "role");
       const isUserAdmin = permissions.isAdmin(userRole);
 
       if (!isUserAdmin) {
-         throw 'Access Denied';
+         throw "Access Denied";
       }
 
       if (Object.keys(constant.USER_ROLE).indexOf(role) === -1) {
-         throw 'invalid role';
+         throw "invalid role";
       }
       return await db_user.update({ _id: userId }, { role });
    }
 
    public async findUser(query): Promise<Document> {
-      const db_user = this.getDBModel('User');
+      const db_user = this.getDBModel("User");
       const isEmail = validate.email(query.username);
       return await db_user
          .getDBInstance()
          .findOne({
-            [isEmail ? 'email' : 'username']: query.username.toLowerCase(),
+            [isEmail ? "email" : "username"]: query.username.toLowerCase(),
             password: query.password,
             $or: [{ banned: { $exists: false } }, { banned: false }],
          })
          .select(selectFields)
-         .populate('circles');
+         .populate("circles");
    }
 
    public async findUserByDid(did: string): Promise<Document> {
-      const db_user = this.getDBModel('User');
+      const db_user = this.getDBModel("User");
       const query = {
          dids: { $elemMatch: { id: did, active: true } },
       };
@@ -212,7 +217,7 @@ export default class extends Base {
    }
 
    public async findUsers(query): Promise<Document[]> {
-      const db_user = this.getDBModel('User');
+      const db_user = this.getDBModel("User");
 
       return await db_user
          .getDBInstance()
@@ -232,7 +237,7 @@ export default class extends Base {
     ************************************************************************************
     */
    public async findAll(query): Promise<Object> {
-      const db_user = this.getDBModel('User');
+      const db_user = this.getDBModel("User");
 
       const finalQuery: any = {
          active: true,
@@ -240,30 +245,30 @@ export default class extends Base {
       };
 
       if (query.search) {
-         finalQuery.$and = _.map(_.trim(query.search).split(' '), (part) => {
+         finalQuery.$and = _.map(_.trim(query.search).split(" "), (part) => {
             return {
                $or: [
                   {
-                     'profile.firstName': {
+                     "profile.firstName": {
                         $regex: part,
-                        $options: 'i',
+                        $options: "i",
                      },
                   },
-                  { 'profile.lastName': { $regex: part, $options: 'i' } },
-                  { username: { $regex: part, $options: 'i' } },
+                  { "profile.lastName": { $regex: part, $options: "i" } },
+                  { username: { $regex: part, $options: "i" } },
                ],
             };
          });
       }
 
       if (query.skillset) {
-         const skillsets = query.skillset.split(',');
-         finalQuery['profile.skillset'] = { $in: skillsets };
+         const skillsets = query.skillset.split(",");
+         finalQuery["profile.skillset"] = { $in: skillsets };
       }
 
       if (query.profession) {
-         const professions = query.profession.split(',');
-         finalQuery['profile.profession'] = { $in: professions };
+         const professions = query.profession.split(",");
+         finalQuery["profile.profession"] = { $in: professions };
       }
 
       if (query.empower) {
@@ -285,11 +290,11 @@ export default class extends Base {
       const total = await totalCursor;
 
       if (users.length) {
-         const db_team = this.getDBModel('Team');
+         const db_team = this.getDBModel("Team");
 
          for (let user of users) {
             await db_team.getDBInstance().populate(user, {
-               path: 'circles',
+               path: "circles",
             });
          }
       }
@@ -301,7 +306,7 @@ export default class extends Base {
    }
 
    public async getCouncilMembers(): Promise<Object> {
-      const db_user = this.getDBModel('User');
+      const db_user = this.getDBModel("User");
       const query = { role: constant.USER_ROLE.COUNCIL };
       const councilMembers = await db_user
          .getDBInstance()
@@ -313,29 +318,29 @@ export default class extends Base {
    }
 
    public async changePassword(param): Promise<boolean> {
-      const db_user = this.getDBModel('User');
+      const db_user = this.getDBModel("User");
 
       const { oldPassword, password } = param;
       const username = param.username.toLowerCase();
-      const userRole = _.get(this.currentUser, 'role');
+      const userRole = _.get(this.currentUser, "role");
       const isUserAdmin = permissions.isAdmin(userRole);
-      const isSelf = _.get(this.currentUser, 'username') === username;
+      const isSelf = _.get(this.currentUser, "username") === username;
 
       this.validate_password(oldPassword);
       this.validate_password(password);
       this.validate_username(username);
 
       if (!isUserAdmin && !isSelf) {
-         throw 'Access Denied';
+         throw "Access Denied";
       }
 
       let user = await db_user.findOne({ username }, { reject: false });
       if (!user) {
-         throw 'user does not exist';
+         throw "user does not exist";
       }
 
       if (user.password !== this.getPassword(oldPassword, user.salt)) {
-         throw 'old password is incorrect';
+         throw "old password is incorrect";
       }
 
       const res = await db_user.update(
@@ -347,7 +352,7 @@ export default class extends Base {
          }
       );
 
-      user = db_user.getDBInstance().findOne({ username }).populate('circles');
+      user = db_user.getDBInstance().findOne({ username }).populate("circles");
 
       return user;
    }
@@ -364,7 +369,7 @@ export default class extends Base {
 
       console.log(`forgotPassword called on email: ${email}`);
 
-      const db_user = this.getDBModel('User');
+      const db_user = this.getDBModel("User");
 
       const userEmailMatch = await db_user.findOne({
          email: email,
@@ -372,7 +377,7 @@ export default class extends Base {
       });
 
       if (!userEmailMatch) {
-         console.error('no user matched');
+         console.error("no user matched");
          return;
       }
 
@@ -387,7 +392,7 @@ export default class extends Base {
       await mail.send({
          to: userEmailMatch.email,
          toName: `${userEmailMatch.profile.firstName} ${userEmailMatch.profile.lastName}`,
-         subject: 'Cyber Republic - Password Reset',
+         subject: "Cyber Republic - Password Reset",
          body: `For your convenience your username is ${userEmailMatch.username}
                 <br/>
                 <br/>
@@ -397,7 +402,7 @@ export default class extends Base {
    }
 
    public async resetPassword(param) {
-      const db_user = this.getDBModel('User');
+      const db_user = this.getDBModel("User");
       const { resetToken, password } = param;
 
       this.validate_password(password);
@@ -409,7 +414,7 @@ export default class extends Base {
 
       if (!userMatchedByToken) {
          console.error(`resetToken ${resetToken} did not match user`);
-         throw 'token invalid';
+         throw "token invalid";
       }
 
       const result = await db_user.update(
@@ -426,7 +431,7 @@ export default class extends Base {
 
       if (!result.nModified) {
          console.error(`resetToken ${resetToken} password update failed`);
-         throw 'password update failed';
+         throw "password update failed";
       }
 
       return 1;
@@ -457,17 +462,17 @@ export default class extends Base {
 
    public validate_username(username) {
       if (!validate.valid_string(username, 6)) {
-         throw 'invalid username';
+         throw "invalid username";
       }
    }
    public validate_password(password) {
       if (!validate.valid_string(password, 8)) {
-         throw 'invalid password';
+         throw "invalid password";
       }
    }
    public validate_email(email) {
       if (!validate.email(email)) {
-         throw 'invalid email';
+         throw "invalid email";
       }
    }
 
@@ -485,15 +490,15 @@ export default class extends Base {
 
       // ensure fromUser is logged in
       if (this.currentUser._id.toString() !== fromUserId) {
-         throw 'User mismatch - from user must = sender';
+         throw "User mismatch - from user must = sender";
       }
 
-      const db_user = this.getDBModel('User');
+      const db_user = this.getDBModel("User");
 
       const fromUser = await db_user.findById(fromUserId);
       const toUser = await db_user.findById(toUserId);
 
-      const formattedSubject = subject || 'New Cyber Republic private message';
+      const formattedSubject = subject || "New Cyber Republic private message";
 
       const body = `
             New message from <a href="${process.env.SERVER_URL}/member/${fromUserId}">${fromUser.username}</a>
@@ -503,11 +508,11 @@ export default class extends Base {
         `;
 
       if (!fromUser) {
-         throw 'From user not found';
+         throw "From user not found";
       }
 
       if (!toUser) {
-         throw 'From user not found';
+         throw "From user not found";
       }
 
       // we assume users must have entered an email
@@ -531,7 +536,7 @@ export default class extends Base {
       await mail.send({
          to: email,
          toName: email,
-         subject: 'Your Cyber Republic registration code',
+         subject: "Your Cyber Republic registration code",
          body: `Your code: ${code}`,
       });
       return true;
@@ -543,7 +548,7 @@ export default class extends Base {
       await mail.send({
          to: email,
          toName: email,
-         subject: 'Welcome to Cyber Republic',
+         subject: "Welcome to Cyber Republic",
          body: `
                 Your registration is complete, your login is automatically linked to the CR forums.<br/>
                 <br/>
@@ -555,7 +560,7 @@ export default class extends Base {
    }
 
    public async checkEmail(param) {
-      const db_user = this.getDBModel('User');
+      const db_user = this.getDBModel("User");
 
       const email = param.email.toLowerCase();
 
@@ -570,8 +575,8 @@ export default class extends Base {
 
    public async getElaUrl() {
       try {
-         const userId = _.get(this.currentUser, '_id');
-         const db_user = this.getDBModel('User');
+         const userId = _.get(this.currentUser, "_id");
+         const db_user = this.getDBModel("User");
          const user = await db_user.findById({ _id: userId });
          if (_.isEmpty(user)) {
             return { success: false };
@@ -603,8 +608,8 @@ export default class extends Base {
             },
          };
          const jwtToken = jwt.sign(jwtClaims, process.env.APP_PRIVATE_KEY, {
-            expiresIn: '7d',
-            algorithm: 'ES256',
+            expiresIn: "7d",
+            algorithm: "ES256",
          });
          const url = `elastos://credaccess/${jwtToken}`;
          return { success: true, url };
@@ -622,7 +627,7 @@ export default class extends Base {
             return {
                code: 400,
                success: false,
-               message: 'Problems parsing jwt token.',
+               message: "Problems parsing jwt token.",
             };
          }
          const rs: any = await getDidPublicKey(claims.iss);
@@ -630,7 +635,7 @@ export default class extends Base {
             return {
                code: 400,
                success: false,
-               message: 'Can not get public key.',
+               message: "Can not get public key.",
             };
          }
 
@@ -643,36 +648,36 @@ export default class extends Base {
                   return {
                      code: 401,
                      success: false,
-                     message: 'Verify signatrue failed.',
+                     message: "Verify signatrue failed.",
                   };
                } else {
                   if (!decoded.req) {
                      return {
                         code: 400,
                         success: false,
-                        message: 'The payload of jwt token is not correct.',
+                        message: "The payload of jwt token is not correct.",
                      };
                   }
                   try {
                      // get user id to find the specific user and save DID
                      const result: any = jwt.decode(
-                        decoded.req.slice('elastos://credaccess/'.length)
+                        decoded.req.slice("elastos://credaccess/".length)
                      );
                      if (!result || (result && !result.userId)) {
                         return {
                            code: 400,
                            success: false,
-                           message: 'Problems parsing jwt token of CR website.',
+                           message: "Problems parsing jwt token of CR website.",
                         };
                      }
-                     const db_user = this.getDBModel('User');
+                     const db_user = this.getDBModel("User");
 
                      const doc = await this.findUserByDid(decoded.iss);
                      if (doc && !doc._id.equals(result.userId)) {
                         return {
                            code: 400,
                            success: false,
-                           message: 'This DID had been used by other user.',
+                           message: "This DID had been used by other user.",
                         };
                      }
 
@@ -728,13 +733,13 @@ export default class extends Base {
                         return {
                            code: 200,
                            success: true,
-                           message: 'Ok',
+                           message: "Ok",
                         };
                      } else {
                         return {
                            code: 400,
                            success: false,
-                           message: 'User ID does not exist.',
+                           message: "User ID does not exist.",
                         };
                      }
                   } catch (err) {
@@ -742,7 +747,7 @@ export default class extends Base {
                      return {
                         code: 500,
                         success: false,
-                        message: 'Something went wrong',
+                        message: "Something went wrong",
                      };
                   }
                }
@@ -753,14 +758,14 @@ export default class extends Base {
          return {
             code: 500,
             success: false,
-            message: 'Something went wrong',
+            message: "Something went wrong",
          };
       }
    }
 
    public async getDid() {
       const userId = this.currentUser._id;
-      const db_user = this.getDBModel('User');
+      const db_user = this.getDBModel("User");
       const user = await db_user.findById({ _id: userId });
       if (user && user.dids) {
          const did = user.dids.find((el) => el.active === true);
@@ -787,8 +792,8 @@ export default class extends Base {
             },
          };
          const jwtToken = jwt.sign(jwtClaims, process.env.APP_PRIVATE_KEY, {
-            expiresIn: '7d',
-            algorithm: 'ES256',
+            expiresIn: "7d",
+            algorithm: "ES256",
          });
          const url = `elastos://credaccess/${jwtToken}`;
          return { success: true, url };
@@ -806,7 +811,7 @@ export default class extends Base {
             return {
                code: 400,
                success: false,
-               message: 'Problems parsing jwt token.',
+               message: "Problems parsing jwt token.",
             };
          }
          const rs: any = await getDidPublicKey(claims.iss);
@@ -814,7 +819,7 @@ export default class extends Base {
             return {
                code: 400,
                success: false,
-               message: 'Can not get public key.',
+               message: "Can not get public key.",
             };
          }
 
@@ -827,22 +832,22 @@ export default class extends Base {
                   return {
                      code: 401,
                      success: false,
-                     message: 'Verify signatrue failed.',
+                     message: "Verify signatrue failed.",
                   };
                } else {
                   try {
                      const payload: any = jwt.decode(
-                        decoded.req.slice('elastos://credaccess/'.length)
+                        decoded.req.slice("elastos://credaccess/".length)
                      );
                      if (!payload || (payload && !payload.nonce)) {
                         return {
                            code: 400,
                            success: false,
-                           message: 'Problems parsing jwt token of CR website.',
+                           message: "Problems parsing jwt token of CR website.",
                         };
                      }
 
-                     const db_did = this.getDBModel('Did');
+                     const db_did = this.getDBModel("Did");
                      const didDoc = await db_did.findOne({
                         nonce: payload.nonce,
                      });
@@ -850,7 +855,7 @@ export default class extends Base {
                         return {
                            code: 200,
                            success: true,
-                           message: 'Ok',
+                           message: "Ok",
                         };
                      }
 
@@ -863,14 +868,14 @@ export default class extends Base {
                      return {
                         code: 200,
                         success: true,
-                        message: 'Ok',
+                        message: "Ok",
                      };
                   } catch (err) {
                      logger.error(err);
                      return {
                         code: 500,
                         success: false,
-                        message: 'Something went wrong',
+                        message: "Something went wrong",
                      };
                   }
                }
@@ -881,7 +886,7 @@ export default class extends Base {
          return {
             code: 500,
             success: false,
-            message: 'Something went wrong',
+            message: "Something went wrong",
          };
       }
    }
@@ -891,7 +896,7 @@ export default class extends Base {
          if (!param.req) {
             return { success: false };
          }
-         const jwtToken = param.req.slice('elastos://credaccess/'.length);
+         const jwtToken = param.req.slice("elastos://credaccess/".length);
          if (!jwtToken) {
             return { success: false };
          }
@@ -903,7 +908,7 @@ export default class extends Base {
                   return { success: false };
                }
                try {
-                  const db_did = this.getDBModel('Did');
+                  const db_did = this.getDBModel("Did");
                   const doc = await db_did.findOne({
                      number: decoded.nonce,
                   });
@@ -925,18 +930,18 @@ export default class extends Base {
    // Start for Login
    public async getUserSaltByEmailOrCode(emailOrCode): Promise<String> {
       const query = { email: { $eq: emailOrCode } };
-      const db_user = this.getDBModel('User');
+      const db_user = this.getDBModel("User");
       const user = await db_user.db.findOne({ email: emailOrCode });
 
       if (!user) {
-         throw 'USERNAME_OR_PASSWORD_IS_INCORRECT';
+         throw "USERNAME_OR_PASSWORD_IS_INCORRECT";
       }
       return user.salt;
    }
 
    public async findUserForLoginEmailOrCode(query): Promise<Document> {
       const emailOrCode = query.email;
-      const db_user = this.getDBModel('User');
+      const db_user = this.getDBModel("User");
       return await db_user.getDBInstance().findOne({
          email: emailOrCode,
          password: query.password,
@@ -949,9 +954,9 @@ export default class extends Base {
       const baseService = this.buildService(Base);
       let { _id } = param;
 
-      if (!_id || !ObjectID.isValid(_id)) throw '_ID_INVALID';
+      if (!_id || !ObjectID.isValid(_id)) throw "_ID_INVALID";
 
-      const view = await this.view({ dbModel: 'User', _id });
+      const view = await this.view({ dbModel: "User", _id });
 
       return view;
    }
@@ -971,9 +976,9 @@ export default class extends Base {
 
       // Covert Email
       email = email.toLowerCase();
-      // Randon Salt
+      // Random Salt
       const salt = uuid.v4();
-      // Create_Fullname
+      // Create_FullName
       let fullName = firstName.concat(lastName);
 
       const doc = {
@@ -993,11 +998,11 @@ export default class extends Base {
                postCode,
             },
          },
-         type: 'ADMIN',
+         type: "ADMIN",
       };
 
-      await this.create({ dbModel: 'User', doc });
-      return 'Save_Successfully';
+      await this.create({ dbModel: "User", doc });
+      return "Save_Successfully";
    }
 
    public async updateBase(param) {
@@ -1037,17 +1042,17 @@ export default class extends Base {
                postCode: postCode,
             },
          },
-         type: 'ADMIN',
+         type: "ADMIN",
       };
 
-      await this.update({ dbModel: 'User', _id, doc });
-      return 'Update_Successfully';
+      await this.update({ dbModel: "User", _id, doc });
+      return "Update_Successfully";
    }
 
    public async deleteBasee(param) {
       let { _id, isDeleted } = param;
       return await this.deleteBase({
-         dbModel: 'User',
+         dbModel: "User",
          _id,
          isDeleted: isDeleted ? true : false,
       });
@@ -1055,9 +1060,9 @@ export default class extends Base {
 
    // ======== CMS ========== //
 
-   // Start Information Of Myself //
+   // Start Information Of Myself // Ricoh Requirement
    public async insertInformation(param) {
-      const DB_USER = this.getDBModel('User');
+      const DB_USER = this.getDBModel("User");
 
       let {
          username,
@@ -1079,8 +1084,8 @@ export default class extends Base {
          type,
       } = param;
 
-      if (!username) throw 'USERNAME_INVALID';
-      if (!email) throw 'EMAIL_INVALID';
+      if (!username) throw "USERNAME_INVALID";
+      if (!email) throw "EMAIL_INVALID";
 
       const work = workAbout.map((e: any) => ObjectId(e));
       // Covert Email
@@ -1118,17 +1123,17 @@ export default class extends Base {
             { $set: { workAbout: work } },
             { upsert: true }
          );
-      return 'SAVE_SUCCESSFULLY';
+      return "SAVE_SUCCESSFULLY";
    }
 
    public async getProfile(param) {
-      const DB_USER = this.getDBModel('User').getDBInstance();
+      const DB_USER = this.getDBModel("User").getDBInstance();
 
       const { userId } = param;
 
       const checkUser = await DB_USER.findById(userId);
 
-      if (!checkUser) throw 'USER_NOT_FOUND';
+      if (!checkUser) throw "USER_NOT_FOUND";
 
       let query: any = [
          {
@@ -1139,15 +1144,15 @@ export default class extends Base {
          },
          {
             $addFields: {
-               country: '$profile.region.country',
-               city: '$profile.region.city',
-               postCode: '$profile.region.postCode',
+               country: "$profile.region.country",
+               city: "$profile.region.city",
+               postCode: "$profile.region.postCode",
             },
          },
          {
             $project: {
-               username: { $ifNull: ['$username', ''] },
-               email: { $ifNull: ['$email', ''] },
+               username: { $ifNull: ["$username", ""] },
+               email: { $ifNull: ["$email", ""] },
                profile: {
                   firstName: 1,
                   lastName: 1,
@@ -1159,7 +1164,7 @@ export default class extends Base {
                country: 1,
                city: 1,
                postCode: 1,
-               type: { $ifNull: ['$type', ''] },
+               type: { $ifNull: ["$type", ""] },
             },
          },
       ];
@@ -1170,7 +1175,7 @@ export default class extends Base {
    }
 
    public async editProfile(param) {
-      const DB_USER = this.getDBModel('User').getDBInstance();
+      const DB_USER = this.getDBModel("User").getDBInstance();
 
       const {
          userId,
@@ -1196,7 +1201,7 @@ export default class extends Base {
       // CheckUser
       const checkUser = await DB_USER.findById(userId);
 
-      if (!checkUser) throw 'USER_NOT_FOUND';
+      if (!checkUser) throw "USER_NOT_FOUND";
 
       const doc: any = {
          username: username,
@@ -1213,7 +1218,7 @@ export default class extends Base {
                postCode: postCode,
             },
          },
-         type: 'ADMIN',
+         type: "ADMIN",
       };
 
       await DB_USER.updateOne(
@@ -1225,11 +1230,11 @@ export default class extends Base {
          }
       );
 
-      return 'UPDATE_PROFILE_SUCCESSFULLY';
+      return "UPDATE_PROFILE_SUCCESSFULLY";
    }
 
    public async aboutMe(param) {
-      const DB_USER = this.getDBModel('User').getDBInstance();
+      const DB_USER = this.getDBModel("User").getDBInstance();
 
       const { about } = param;
    }
@@ -1237,8 +1242,6 @@ export default class extends Base {
 
    // Ricoh Requirement
    public async inputSchool(param) {
-      const Db_User = this.db_user;
-
       let {
          username,
          email,
@@ -1258,8 +1261,8 @@ export default class extends Base {
          workAbout,
       } = param;
 
-      if (!username) throw 'USERNAME_INVALID';
-      if (!email) throw 'EMAIL_INVALID';
+      if (!username) throw "USERNAME_INVALID";
+      if (!email) throw "EMAIL_INVALID";
 
       // Lower Email
       email = email.toLowerCase();
@@ -1269,7 +1272,7 @@ export default class extends Base {
       let fullName = firstName.concat(lastName);
 
       if (!workAbout || !ObjectID.isValid(workAbout))
-         throw 'WorkAbout_ID_Invalid';
+         throw "WorkAbout_ID_Invalid";
 
       workAbout.map((e) => ObjectId(e));
 
@@ -1290,11 +1293,49 @@ export default class extends Base {
                postCode: postCode,
             },
          },
-         type: 'ADMIN',
+         type: "ADMIN",
          workAbout: ObjectId(workAbout),
       };
 
       // await Db_User.save(doc);
-      return 'Save_Successfully';
+      return "Save_Successfully";
+   }
+
+   public async getListUser(param) {
+
+      let { page, limit } = param;
+
+      page = page > 0 ? +page : 1;
+      limit = limit > 0 ? +limit : 10;
+
+      let query: any = [
+         { $match: { isDeleted: false } },
+         {
+            $lookup: {
+               let: { workId: "$workAbout" },
+               from: "workabouts",
+               pipeline: [
+                  {
+                     $match: {
+                        $expr: {
+                           $and: [
+                              { $eq: ["$isDeleted", false] },
+                              { $in: ["$_id", "$$workId"] },
+                           ]
+                        }
+                     }
+                  }, { $project: { location: 1, profile: 1 } }
+               ],
+               as: "work_about",
+            }
+         },
+         { $project: { profile: 1, work_about: 1 } }
+      ];
+
+      const result = await this.db_user.getDBInstance()
+         .aggregate(query)
+         .append(paginateAggregate([], page, limit));
+
+      return result[0];
    }
 }
