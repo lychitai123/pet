@@ -261,19 +261,25 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     /* harmony import */
 
 
-    var _shared_share_module__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(
-    /*! ../../shared/share.module */
-    "./src/app/shared/share.module.ts");
+    var _angular_common__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(
+    /*! @angular/common */
+    "./node_modules/@angular/common/__ivy_ngcc__/fesm2015/common.js");
     /* harmony import */
 
 
-    var _skill_routing__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
+    var _skill_component__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
+    /*! ./skill.component */
+    "./src/app/layouts/skill/skill.component.ts");
+    /* harmony import */
+
+
+    var _skill_routing__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(
     /*! ./skill.routing */
     "./src/app/layouts/skill/skill.routing.ts");
     /* harmony import */
 
 
-    var _angular_router__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(
+    var _angular_router__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(
     /*! @angular/router */
     "./node_modules/@angular/router/__ivy_ngcc__/fesm2015/router.js"); // Routing
 
@@ -289,12 +295,13 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
       factory: function SkillModule_Factory(t) {
         return new (t || SkillModule)();
       },
-      imports: [[_shared_share_module__WEBPACK_IMPORTED_MODULE_1__["ShareModule"], _skill_routing__WEBPACK_IMPORTED_MODULE_2__["SkillRouting"]]]
+      imports: [[_angular_common__WEBPACK_IMPORTED_MODULE_1__["CommonModule"], _skill_routing__WEBPACK_IMPORTED_MODULE_3__["SkillRouting"]]]
     });
 
     (function () {
       (typeof ngJitMode === "undefined" || ngJitMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵsetNgModuleScope"](SkillModule, {
-        imports: [_shared_share_module__WEBPACK_IMPORTED_MODULE_1__["ShareModule"], _angular_router__WEBPACK_IMPORTED_MODULE_3__["RouterModule"]]
+        declarations: [_skill_component__WEBPACK_IMPORTED_MODULE_2__["SkillComponent"]],
+        imports: [_angular_common__WEBPACK_IMPORTED_MODULE_1__["CommonModule"], _angular_router__WEBPACK_IMPORTED_MODULE_4__["RouterModule"]]
       });
     })();
     /*@__PURE__*/
@@ -304,8 +311,8 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
       _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](SkillModule, [{
         type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["NgModule"],
         args: [{
-          imports: [_shared_share_module__WEBPACK_IMPORTED_MODULE_1__["ShareModule"], _skill_routing__WEBPACK_IMPORTED_MODULE_2__["SkillRouting"]],
-          declarations: []
+          imports: [_angular_common__WEBPACK_IMPORTED_MODULE_1__["CommonModule"], _skill_routing__WEBPACK_IMPORTED_MODULE_3__["SkillRouting"]],
+          declarations: [_skill_component__WEBPACK_IMPORTED_MODULE_2__["SkillComponent"]]
         }]
       }], null, null);
     })();

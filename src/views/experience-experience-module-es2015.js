@@ -124,25 +124,27 @@ ExperienceComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefi
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ExperienceModule", function() { return ExperienceModule; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/__ivy_ngcc__/fesm2015/core.js");
-/* harmony import */ var _shared_share_module__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../shared/share.module */ "./src/app/shared/share.module.ts");
-/* harmony import */ var _experience_routing__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./experience.routing */ "./src/app/layouts/experience/experience.routing.ts");
-/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/__ivy_ngcc__/fesm2015/router.js");
+/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/common */ "./node_modules/@angular/common/__ivy_ngcc__/fesm2015/common.js");
+/* harmony import */ var _experience_component__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./experience.component */ "./src/app/layouts/experience/experience.component.ts");
+/* harmony import */ var _experience_routing__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./experience.routing */ "./src/app/layouts/experience/experience.routing.ts");
+/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/__ivy_ngcc__/fesm2015/router.js");
 
 
 // Routing
 
 
 
+
 class ExperienceModule {
 }
 ExperienceModule.ɵmod = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineNgModule"]({ type: ExperienceModule });
-ExperienceModule.ɵinj = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjector"]({ factory: function ExperienceModule_Factory(t) { return new (t || ExperienceModule)(); }, imports: [[_shared_share_module__WEBPACK_IMPORTED_MODULE_1__["ShareModule"], _experience_routing__WEBPACK_IMPORTED_MODULE_2__["ExperienceRouting"]]] });
-(function () { (typeof ngJitMode === "undefined" || ngJitMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵsetNgModuleScope"](ExperienceModule, { imports: [_shared_share_module__WEBPACK_IMPORTED_MODULE_1__["ShareModule"], _angular_router__WEBPACK_IMPORTED_MODULE_3__["RouterModule"]] }); })();
+ExperienceModule.ɵinj = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjector"]({ factory: function ExperienceModule_Factory(t) { return new (t || ExperienceModule)(); }, imports: [[_angular_common__WEBPACK_IMPORTED_MODULE_1__["CommonModule"], _experience_routing__WEBPACK_IMPORTED_MODULE_3__["ExperienceRouting"]]] });
+(function () { (typeof ngJitMode === "undefined" || ngJitMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵsetNgModuleScope"](ExperienceModule, { declarations: [_experience_component__WEBPACK_IMPORTED_MODULE_2__["ExperienceComponent"]], imports: [_angular_common__WEBPACK_IMPORTED_MODULE_1__["CommonModule"], _angular_router__WEBPACK_IMPORTED_MODULE_4__["RouterModule"]] }); })();
 /*@__PURE__*/ (function () { _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](ExperienceModule, [{
         type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["NgModule"],
         args: [{
-                imports: [_shared_share_module__WEBPACK_IMPORTED_MODULE_1__["ShareModule"], _experience_routing__WEBPACK_IMPORTED_MODULE_2__["ExperienceRouting"]],
-                declarations: []
+                imports: [_angular_common__WEBPACK_IMPORTED_MODULE_1__["CommonModule"], _experience_routing__WEBPACK_IMPORTED_MODULE_3__["ExperienceRouting"]],
+                declarations: [_experience_component__WEBPACK_IMPORTED_MODULE_2__["ExperienceComponent"]]
             }]
     }], null, null); })();
 

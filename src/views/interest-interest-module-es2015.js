@@ -58,25 +58,27 @@ InterestComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefine
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "InterestModule", function() { return InterestModule; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/__ivy_ngcc__/fesm2015/core.js");
-/* harmony import */ var _shared_share_module__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../shared/share.module */ "./src/app/shared/share.module.ts");
-/* harmony import */ var _interest_routing__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./interest.routing */ "./src/app/layouts/interest/interest.routing.ts");
-/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/__ivy_ngcc__/fesm2015/router.js");
+/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/common */ "./node_modules/@angular/common/__ivy_ngcc__/fesm2015/common.js");
+/* harmony import */ var _interest_component__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./interest.component */ "./src/app/layouts/interest/interest.component.ts");
+/* harmony import */ var _interest_routing__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./interest.routing */ "./src/app/layouts/interest/interest.routing.ts");
+/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/__ivy_ngcc__/fesm2015/router.js");
 
 
 // Routing
 
 
 
+
 class InterestModule {
 }
 InterestModule.ɵmod = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineNgModule"]({ type: InterestModule });
-InterestModule.ɵinj = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjector"]({ factory: function InterestModule_Factory(t) { return new (t || InterestModule)(); }, imports: [[_shared_share_module__WEBPACK_IMPORTED_MODULE_1__["ShareModule"], _interest_routing__WEBPACK_IMPORTED_MODULE_2__["InterestRouting"]]] });
-(function () { (typeof ngJitMode === "undefined" || ngJitMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵsetNgModuleScope"](InterestModule, { imports: [_shared_share_module__WEBPACK_IMPORTED_MODULE_1__["ShareModule"], _angular_router__WEBPACK_IMPORTED_MODULE_3__["RouterModule"]] }); })();
+InterestModule.ɵinj = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjector"]({ factory: function InterestModule_Factory(t) { return new (t || InterestModule)(); }, imports: [[_angular_common__WEBPACK_IMPORTED_MODULE_1__["CommonModule"], _interest_routing__WEBPACK_IMPORTED_MODULE_3__["InterestRouting"]]] });
+(function () { (typeof ngJitMode === "undefined" || ngJitMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵsetNgModuleScope"](InterestModule, { declarations: [_interest_component__WEBPACK_IMPORTED_MODULE_2__["InterestComponent"]], imports: [_angular_common__WEBPACK_IMPORTED_MODULE_1__["CommonModule"], _angular_router__WEBPACK_IMPORTED_MODULE_4__["RouterModule"]] }); })();
 /*@__PURE__*/ (function () { _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](InterestModule, [{
         type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["NgModule"],
         args: [{
-                imports: [_shared_share_module__WEBPACK_IMPORTED_MODULE_1__["ShareModule"], _interest_routing__WEBPACK_IMPORTED_MODULE_2__["InterestRouting"]],
-                declarations: []
+                imports: [_angular_common__WEBPACK_IMPORTED_MODULE_1__["CommonModule"], _interest_routing__WEBPACK_IMPORTED_MODULE_3__["InterestRouting"]],
+                declarations: [_interest_component__WEBPACK_IMPORTED_MODULE_2__["InterestComponent"]]
             }]
     }], null, null); })();
 

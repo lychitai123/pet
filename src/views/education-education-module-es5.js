@@ -199,21 +199,28 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     /* harmony import */
 
 
-    var _shared_share_module__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(
-    /*! ../../shared/share.module */
-    "./src/app/shared/share.module.ts");
+    var _angular_common__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(
+    /*! @angular/common */
+    "./node_modules/@angular/common/__ivy_ngcc__/fesm2015/common.js");
     /* harmony import */
 
 
-    var _education_routing__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
+    var _education_component__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
+    /*! ./education.component */
+    "./src/app/layouts/education/education.component.ts");
+    /* harmony import */
+
+
+    var _education_routing__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(
     /*! ./education.routing */
     "./src/app/layouts/education/education.routing.ts");
     /* harmony import */
 
 
-    var _angular_router__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(
+    var _angular_router__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(
     /*! @angular/router */
-    "./node_modules/@angular/router/__ivy_ngcc__/fesm2015/router.js"); // Routing
+    "./node_modules/@angular/router/__ivy_ngcc__/fesm2015/router.js"); // Component
+    // Routing
 
 
     var EducationModule = function EducationModule() {
@@ -227,12 +234,13 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
       factory: function EducationModule_Factory(t) {
         return new (t || EducationModule)();
       },
-      imports: [[_shared_share_module__WEBPACK_IMPORTED_MODULE_1__["ShareModule"], _education_routing__WEBPACK_IMPORTED_MODULE_2__["EducationRouting"]]]
+      imports: [[_angular_common__WEBPACK_IMPORTED_MODULE_1__["CommonModule"], _education_routing__WEBPACK_IMPORTED_MODULE_3__["EducationRouting"]]]
     });
 
     (function () {
       (typeof ngJitMode === "undefined" || ngJitMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵsetNgModuleScope"](EducationModule, {
-        imports: [_shared_share_module__WEBPACK_IMPORTED_MODULE_1__["ShareModule"], _angular_router__WEBPACK_IMPORTED_MODULE_3__["RouterModule"]]
+        declarations: [_education_component__WEBPACK_IMPORTED_MODULE_2__["EducationComponent"]],
+        imports: [_angular_common__WEBPACK_IMPORTED_MODULE_1__["CommonModule"], _angular_router__WEBPACK_IMPORTED_MODULE_4__["RouterModule"]]
       });
     })();
     /*@__PURE__*/
@@ -242,8 +250,8 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
       _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](EducationModule, [{
         type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["NgModule"],
         args: [{
-          imports: [_shared_share_module__WEBPACK_IMPORTED_MODULE_1__["ShareModule"], _education_routing__WEBPACK_IMPORTED_MODULE_2__["EducationRouting"]],
-          declarations: []
+          imports: [_angular_common__WEBPACK_IMPORTED_MODULE_1__["CommonModule"], _education_routing__WEBPACK_IMPORTED_MODULE_3__["EducationRouting"]],
+          declarations: [_education_component__WEBPACK_IMPORTED_MODULE_2__["EducationComponent"]]
         }]
       }], null, null);
     })();

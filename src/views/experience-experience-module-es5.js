@@ -265,19 +265,25 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     /* harmony import */
 
 
-    var _shared_share_module__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(
-    /*! ../../shared/share.module */
-    "./src/app/shared/share.module.ts");
+    var _angular_common__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(
+    /*! @angular/common */
+    "./node_modules/@angular/common/__ivy_ngcc__/fesm2015/common.js");
     /* harmony import */
 
 
-    var _experience_routing__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
+    var _experience_component__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
+    /*! ./experience.component */
+    "./src/app/layouts/experience/experience.component.ts");
+    /* harmony import */
+
+
+    var _experience_routing__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(
     /*! ./experience.routing */
     "./src/app/layouts/experience/experience.routing.ts");
     /* harmony import */
 
 
-    var _angular_router__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(
+    var _angular_router__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(
     /*! @angular/router */
     "./node_modules/@angular/router/__ivy_ngcc__/fesm2015/router.js"); // Routing
 
@@ -293,12 +299,13 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
       factory: function ExperienceModule_Factory(t) {
         return new (t || ExperienceModule)();
       },
-      imports: [[_shared_share_module__WEBPACK_IMPORTED_MODULE_1__["ShareModule"], _experience_routing__WEBPACK_IMPORTED_MODULE_2__["ExperienceRouting"]]]
+      imports: [[_angular_common__WEBPACK_IMPORTED_MODULE_1__["CommonModule"], _experience_routing__WEBPACK_IMPORTED_MODULE_3__["ExperienceRouting"]]]
     });
 
     (function () {
       (typeof ngJitMode === "undefined" || ngJitMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵsetNgModuleScope"](ExperienceModule, {
-        imports: [_shared_share_module__WEBPACK_IMPORTED_MODULE_1__["ShareModule"], _angular_router__WEBPACK_IMPORTED_MODULE_3__["RouterModule"]]
+        declarations: [_experience_component__WEBPACK_IMPORTED_MODULE_2__["ExperienceComponent"]],
+        imports: [_angular_common__WEBPACK_IMPORTED_MODULE_1__["CommonModule"], _angular_router__WEBPACK_IMPORTED_MODULE_4__["RouterModule"]]
       });
     })();
     /*@__PURE__*/
@@ -308,8 +315,8 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
       _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](ExperienceModule, [{
         type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["NgModule"],
         args: [{
-          imports: [_shared_share_module__WEBPACK_IMPORTED_MODULE_1__["ShareModule"], _experience_routing__WEBPACK_IMPORTED_MODULE_2__["ExperienceRouting"]],
-          declarations: []
+          imports: [_angular_common__WEBPACK_IMPORTED_MODULE_1__["CommonModule"], _experience_routing__WEBPACK_IMPORTED_MODULE_3__["ExperienceRouting"]],
+          declarations: [_experience_component__WEBPACK_IMPORTED_MODULE_2__["ExperienceComponent"]]
         }]
       }], null, null);
     })();

@@ -173,21 +173,27 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     /* harmony import */
 
 
-    var _shared_share_module__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(
-    /*! ../../shared/share.module */
-    "./src/app/shared/share.module.ts");
+    var _angular_common__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(
+    /*! @angular/common */
+    "./node_modules/@angular/common/__ivy_ngcc__/fesm2015/common.js");
     /* harmony import */
 
 
-    var _about_routing__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
+    var _about_component__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
+    /*! ./about.component */
+    "./src/app/layouts/about/about.component.ts");
+    /* harmony import */
+
+
+    var _about_routing__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(
     /*! ./about.routing */
     "./src/app/layouts/about/about.routing.ts");
     /* harmony import */
 
 
-    var _angular_router__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(
+    var _angular_router__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(
     /*! @angular/router */
-    "./node_modules/@angular/router/__ivy_ngcc__/fesm2015/router.js"); // Routing
+    "./node_modules/@angular/router/__ivy_ngcc__/fesm2015/router.js"); // Component and Routing
 
 
     var AboutModule = function AboutModule() {
@@ -201,12 +207,13 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
       factory: function AboutModule_Factory(t) {
         return new (t || AboutModule)();
       },
-      imports: [[_shared_share_module__WEBPACK_IMPORTED_MODULE_1__["ShareModule"], _about_routing__WEBPACK_IMPORTED_MODULE_2__["AboutRouting"]]]
+      imports: [[_angular_common__WEBPACK_IMPORTED_MODULE_1__["CommonModule"], _about_routing__WEBPACK_IMPORTED_MODULE_3__["AboutRouting"]]]
     });
 
     (function () {
       (typeof ngJitMode === "undefined" || ngJitMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵsetNgModuleScope"](AboutModule, {
-        imports: [_shared_share_module__WEBPACK_IMPORTED_MODULE_1__["ShareModule"], _angular_router__WEBPACK_IMPORTED_MODULE_3__["RouterModule"]]
+        declarations: [_about_component__WEBPACK_IMPORTED_MODULE_2__["AboutComponent"]],
+        imports: [_angular_common__WEBPACK_IMPORTED_MODULE_1__["CommonModule"], _angular_router__WEBPACK_IMPORTED_MODULE_4__["RouterModule"]]
       });
     })();
     /*@__PURE__*/
@@ -216,8 +223,8 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
       _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](AboutModule, [{
         type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["NgModule"],
         args: [{
-          imports: [_shared_share_module__WEBPACK_IMPORTED_MODULE_1__["ShareModule"], _about_routing__WEBPACK_IMPORTED_MODULE_2__["AboutRouting"]],
-          declarations: []
+          imports: [_angular_common__WEBPACK_IMPORTED_MODULE_1__["CommonModule"], _about_routing__WEBPACK_IMPORTED_MODULE_3__["AboutRouting"]],
+          declarations: [_about_component__WEBPACK_IMPORTED_MODULE_2__["AboutComponent"]]
         }]
       }], null, null);
     })();

@@ -247,21 +247,28 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     /* harmony import */
 
 
-    var _shared_share_module__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(
-    /*! ../../shared/share.module */
-    "./src/app/shared/share.module.ts");
+    var _angular_common__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(
+    /*! @angular/common */
+    "./node_modules/@angular/common/__ivy_ngcc__/fesm2015/common.js");
     /* harmony import */
 
 
-    var _award_routing__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
+    var _award_component__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
+    /*! ./award.component */
+    "./src/app/layouts/award/award.component.ts");
+    /* harmony import */
+
+
+    var _award_routing__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(
     /*! ./award.routing */
     "./src/app/layouts/award/award.routing.ts");
     /* harmony import */
 
 
-    var _angular_router__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(
+    var _angular_router__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(
     /*! @angular/router */
-    "./node_modules/@angular/router/__ivy_ngcc__/fesm2015/router.js"); // Routing
+    "./node_modules/@angular/router/__ivy_ngcc__/fesm2015/router.js"); // Component
+    // Routing
 
 
     var AwardModule = function AwardModule() {
@@ -275,12 +282,13 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
       factory: function AwardModule_Factory(t) {
         return new (t || AwardModule)();
       },
-      imports: [[_shared_share_module__WEBPACK_IMPORTED_MODULE_1__["ShareModule"], _award_routing__WEBPACK_IMPORTED_MODULE_2__["AwardRouting"]]]
+      imports: [[_angular_common__WEBPACK_IMPORTED_MODULE_1__["CommonModule"], _award_routing__WEBPACK_IMPORTED_MODULE_3__["AwardRouting"]]]
     });
 
     (function () {
       (typeof ngJitMode === "undefined" || ngJitMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵsetNgModuleScope"](AwardModule, {
-        imports: [_shared_share_module__WEBPACK_IMPORTED_MODULE_1__["ShareModule"], _angular_router__WEBPACK_IMPORTED_MODULE_3__["RouterModule"]]
+        declarations: [_award_component__WEBPACK_IMPORTED_MODULE_2__["AwardComponent"]],
+        imports: [_angular_common__WEBPACK_IMPORTED_MODULE_1__["CommonModule"], _angular_router__WEBPACK_IMPORTED_MODULE_4__["RouterModule"]]
       });
     })();
     /*@__PURE__*/
@@ -290,8 +298,8 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
       _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](AwardModule, [{
         type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["NgModule"],
         args: [{
-          imports: [_shared_share_module__WEBPACK_IMPORTED_MODULE_1__["ShareModule"], _award_routing__WEBPACK_IMPORTED_MODULE_2__["AwardRouting"]],
-          declarations: []
+          imports: [_angular_common__WEBPACK_IMPORTED_MODULE_1__["CommonModule"], _award_routing__WEBPACK_IMPORTED_MODULE_3__["AwardRouting"]],
+          declarations: [_award_component__WEBPACK_IMPORTED_MODULE_2__["AwardComponent"]]
         }]
       }], null, null);
     })();
