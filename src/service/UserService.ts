@@ -957,7 +957,6 @@ export default class extends Base {
       if (!_id || !ObjectID.isValid(_id)) throw "_ID_INVALID";
 
       const view = await this.view({ dbModel: "User", _id });
-
       return view;
    }
 
