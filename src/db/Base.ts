@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose'
 import * as _ from 'lodash'
-import {Document} from 'mongoose'
+import { Document } from 'mongoose'
 
 /**
  * This is an abstraction layer around the db model
@@ -19,16 +19,16 @@ export default abstract class {
     private schema
     private reject_fields: object
 
-    constructor(DB){
+    constructor(DB) {
         this.schema = this.buildSchema()
         this.db = DB.model(this.getName(), this.schema)
 
         this.reject_fields = _.extend({
-            __v : false
+            __v: false
         }, this.rejectFields())
     }
 
-    protected buildSchema(){
+    protected buildSchema() {
         const schema = new mongoose.Schema(_.extend({
             createdAt: {
                 type: Date,
@@ -46,80 +46,80 @@ export default abstract class {
     }
 
     protected abstract getSchema(): mongoose.SchemaDefinition
-    protected getSchemaOption(): mongoose.SchemaOptions{
+    protected getSchemaOption(): mongoose.SchemaOptions {
         return {}
     }
     protected abstract getName(): string
-    protected rejectFields(): object{
+    protected rejectFields(): object {
         return {}
     }
 
-    public async save(doc: object): Promise<Document>{
+    public async save(doc: object): Promise<Document> {
         return await this.db.create(doc)
     }
 
     // BUG: seems we can't chain sort on the result
-    public async find(query, opts?): Promise<Document[]>{
+    public async find(query, opts?): Promise<Document[]> {
         const option = this.buildFindOptions(opts)
         const reject_fields = option.reject ? this.reject_fields : {}
         let res = await this.db.find(query, reject_fields)
         return res
     }
 
-    public async findById(id, opts?): Promise<Document>{
-        return await this.findOne({_id: id}, opts)
+    public async findById(id, opts?): Promise<Document> {
+        return await this.findOne({ _id: id }, opts)
     }
 
-    public async findOne(query, opts?): Promise<Document>{
+    public async findOne(query, opts?): Promise<Document> {
         const option = this.buildFindOptions(opts)
         const reject_fields = option.reject ? this.reject_fields : {}
         return await this.db.findOne(query, reject_fields)
     }
 
-    public async findByIdAndDelete(id): Promise<Document>{
+    public async findByIdAndDelete(id): Promise<Document> {
         return await this.db.findByIdAndDelete(id)
     }
 
-    public async findOneAndDelete(query): Promise<Document>{
+    public async findOneAndDelete(query): Promise<Document> {
         return await this.db.findOneAndDelete(query)
     }
 
-    public async update(query, doc, opts?: updateOptions): Promise<Document>{
+    public async update(query, doc, opts?: updateOptions): Promise<Document> {
         return await this.db.update(query, doc, this.buildUpdateOptions(opts))
     }
 
     // TODO why can not run, will lead a memory leak error.
-    public async findOneAndUpdate(query, doc, opts?): Promise<Document>{
+    public async findOneAndUpdate(query, doc, opts?): Promise<Document> {
         return await this.db.findOneAndUpdate(query, doc, opts)
     }
 
-    public async count(query): Promise<number>{
+    public async count(query): Promise<number> {
         return await this.db.count(query)
     }
-    public async list(query, sort?, limit?, select?: string): Promise<[Document]>{
+    public async list(query, sort?, limit?, select?: string): Promise<[Document]> {
         return await this.db.find(query).select(select || '').sort(sort || {}).limit(_.toNumber(limit) || 1000)
     }
 
-    public getAggregate(){
+    public getAggregate() {
         return this.db.aggregate()
     }
-    public getDBInstance(){
+    public getDBInstance() {
         return this.db
     }
 
-    public async remove(query){
+    public async remove(query) {
         return await this.db.remove(query)
     }
 
-    private buildUpdateOptions(opts?: updateOptions): updateOptions{
+    private buildUpdateOptions(opts?: updateOptions): updateOptions {
         return _.extend({
-            multi : false
-        }, opts||{})
+            multi: false
+        }, opts || {})
     }
-    private buildFindOptions(opts?: findOptions): findOptions{
+    private buildFindOptions(opts?: findOptions): findOptions {
         return _.extend({
             reject: true
-        }, opts||{})
+        }, opts || {})
     }
 }
 
