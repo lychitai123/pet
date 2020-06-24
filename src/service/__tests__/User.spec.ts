@@ -1,8 +1,8 @@
 declare var global, describe, test, require, process, beforeAll, afterAll
 
-import {expect, assert} from 'chai'
+import { expect, assert } from 'chai'
 
-import {constant} from '../../constant';
+import { constant } from '../../constant';
 import db from '../../db';
 import '../../config';
 import UserService from '../UserService';
