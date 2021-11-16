@@ -21,7 +21,7 @@
     "@types/http-status": "0.2.30",
     "@types/jsonwebtoken": "^8.3.7",
     "@types/optimist": "0.0.29",
-    "aws-sdk": "^2.245.1",
+    "aws-sdk": "^2.814.0",
     "axios": "^0.19.2",
     "base64url": "^3.0.1",
     "bitcore-lib-p256": "^0.16.0",
